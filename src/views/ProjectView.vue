@@ -13,7 +13,9 @@
         <p><strong>Budget:</strong> {{ project.budget }}</p>
         <p><strong>Status:</strong> {{ project.status }}</p>
 
-        <button class="view-btn">View Details</button>
+        <router-link :to="`/projects/${project.id}`" class="view-btn">
+          View Details
+        </router-link>
       </div>
     </div>
   </div>
@@ -103,6 +105,7 @@ export default {
 }
 
 .view-btn {
+  display: inline-block;
   margin-top: 15px;
   padding: 10px 15px;
   border: none;
@@ -110,6 +113,7 @@ export default {
   color: white;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .view-btn:hover {

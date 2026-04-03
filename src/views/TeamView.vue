@@ -12,6 +12,10 @@
         <p><strong>Members:</strong> {{ team.members }}</p>
         <p><strong>Project:</strong> {{ team.project }}</p>
         <p><strong>Status:</strong> {{ team.status }}</p>
+
+        <router-link :to="`/teams/${team.id}`" class="view-btn">
+          View Details
+        </router-link>
       </div>
     </div>
   </div>
@@ -19,7 +23,7 @@
 
 <script>
 export default {
-  name: "TeamsView",
+  name: "TeamView",
   data() {
     return {
       teams: [
@@ -98,5 +102,19 @@ export default {
 .team-card p {
   margin: 8px 0;
   color: #444;
+}
+
+.view-btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: #42b983;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.view-btn:hover {
+  background-color: #369f6e;
 }
 </style>
