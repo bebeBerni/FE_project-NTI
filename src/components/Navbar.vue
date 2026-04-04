@@ -1,19 +1,37 @@
 <template>
   <nav class="navbar">
     <div class="navbar-container">
+
+      <!-- LOGO -->
       <div class="logo">
         <router-link to="/">MyProject</router-link>
       </div>
 
+      <!-- NAV LINKS -->
       <ul class="nav-links">
-        <li><router-link to="/">Home</router-link></li>
-        <li><router-link to="/projects">Projects</router-link></li>
-        <li><router-link to="/teams">Teams</router-link></li>
+        <li><router-link to="/">{{ $t('nav.home') }}</router-link></li>
+        <li><router-link to="/projects">{{ $t('nav.projects') }}</router-link></li>
+        <li><router-link to="/teams">{{ $t('nav.teams') }}</router-link></li>
       </ul>
 
-      <div class="auth-buttons">
-        <router-link to="/login" class="login-btn">Login</router-link>
-        <router-link to="/register" class="register-btn">Register</router-link>
+      <!-- RIGHT SIDE -->
+      <div class="right-section">
+
+        <!-- LANGUAGE SWITCH -->
+        <select v-model="$i18n.locale" class="lang-select">
+          <option value="en">EN</option>
+          <option value="sk">SK</option>
+        </select>
+
+        <!-- AUTH -->
+        <router-link to="/login" class="login-btn">
+          {{ $t('nav.login') }}
+        </router-link>
+
+        <router-link to="/register" class="register-btn">
+          {{ $t('nav.register') }}
+        </router-link>
+
       </div>
     </div>
   </nav>
@@ -21,7 +39,20 @@
 
 <script>
 export default {
-  name: "Navbar"
+  name: "Navbar",
+
+  watch: {
+    '$i18n.locale'(newLang) {
+      localStorage.setItem('lang', newLang)
+    }
+  },
+
+  mounted() {
+    const savedLang = localStorage.getItem('lang')
+    if (savedLang) {
+      this.$i18n.locale = savedLang
+    }
+  }
 }
 </script>
 
@@ -37,6 +68,7 @@ export default {
   align-items: center;
 }
 
+/* LOGO */
 .logo a {
   color: white;
   font-size: 24px;
@@ -44,6 +76,7 @@ export default {
   font-weight: bold;
 }
 
+/* LINKS */
 .nav-links {
   display: flex;
   list-style: none;
@@ -53,6 +86,7 @@ export default {
 .nav-links a {
   color: white;
   text-decoration: none;
+  font-size: 16px;
 }
 
 .nav-links a:hover,
@@ -60,16 +94,27 @@ export default {
   color: #42b983;
 }
 
-.auth-buttons {
+/* RIGHT SIDE */
+.right-section {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
+/* LANGUAGE */
+.lang-select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+/* LOGIN (outlined) */
 .login-btn {
-  padding: 8px 16px;
+  padding: 8px 14px;
   border: 2px solid #42b983;
   color: #42b983;
-  background-color: transparent;
+  background: transparent;
   border-radius: 6px;
   text-decoration: none;
   font-weight: 600;
@@ -80,8 +125,9 @@ export default {
   color: white;
 }
 
+/* REGISTER (filled) */
 .register-btn {
-  padding: 8px 16px;
+  padding: 8px 14px;
   background-color: #42b983;
   color: white;
   border-radius: 6px;
