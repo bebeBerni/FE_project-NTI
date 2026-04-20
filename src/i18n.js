@@ -3,12 +3,17 @@ import { createI18n } from 'vue-i18n'
 const messages = {
   en: {
     nav: {
-      home: 'Home',
-      projects: 'Projects',
-      teams: 'Teams',
-      login: 'Login',
-      register: 'Register'
-    },
+  home: "Home",
+  about: "About NTI",
+  projects: "Projects",
+  teams: "Teams",
+  partners: "Partners and Mentors",
+  challenges: "Challenges and Deadlines",
+  news: "News",
+  contact: "Contact",
+  login: "Login",
+  register: "Register"
+},
 
     home: {
       hero: {
@@ -199,13 +204,18 @@ const messages = {
   },
 
   sk: {
-    nav: {
-      home: 'Domov',
-      projects: 'Projekty',
-      teams: 'Tímy',
-      login: 'Prihlásenie',
-      register: 'Registrácia'
-    },
+  nav: {
+    home: "Domov",
+    about: "O NTI",
+    projects: "Projekty",
+    teams: "Tímy",
+    partners: "Partneri a mentori",
+    challenges: "Výzvy a termíny",
+    news: "Novinky",
+    contact: "Kontakt",
+    login: "Prihlásenie",
+    register: "Registrácia"
+  },
 
     home: {
       hero: {

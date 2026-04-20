@@ -1,55 +1,38 @@
 <template>
-  <div class="section-wrapper">
-    <!-- ABOUT -->
+  <div>
+    <!-- SUCCESSFUL PROJECTS -->
     <section class="section">
-      <h2>{{ $t('home.about.title') }}</h2>
-      <p>{{ $t('home.about.text') }}</p>
-    </section>
-
-    <!-- MISSION -->
-    <section class="section alt-section">
-      <h2>{{ $t('home.mission.title') }}</h2>
-      <p>{{ $t('home.mission.text') }}</p>
-    </section>
-
-    <!-- PILLARS -->
-    <section class="section">
-      <h2>{{ $t('home.pillars.title') }}</h2>
+      <h2>{{ $t('home.successfulProjects.title') }}</h2>
       <div class="card-grid three-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.education.title') }}</h3>
-          <p>{{ $t('home.pillars.items.education.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.innovation.title') }}</h3>
-          <p>{{ $t('home.pillars.items.innovation.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.collaboration.title') }}</h3>
-          <p>{{ $t('home.pillars.items.collaboration.text') }}</p>
+        <div class="info-card" v-for="project in projects" :key="project.id">
+          <h3>{{ $t(project.titleKey) }}</h3>
+          <p>{{ $t(project.descriptionKey) }}</p>
+          <span class="badge">{{ $t(project.statusKey) }}</span>
         </div>
       </div>
     </section>
 
-    <!-- ECOSYSTEM -->
+    <!-- FAQ -->
     <section class="section alt-section">
-      <h2>{{ $t('home.ecosystem.title') }}</h2>
-      <div class="card-grid four-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.students.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.students.text') }}</p>
+      <h2>{{ $t('home.faq.title') }}</h2>
+      <div class="faq-list">
+        <div class="faq-item" v-for="item in faq" :key="item.id">
+          <h3>{{ $t(item.questionKey) }}</h3>
+          <p>{{ $t(item.answerKey) }}</p>
         </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.companies.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.companies.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.mentors.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.mentors.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.administration.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.administration.text') }}</p>
+      </div>
+    </section>
+
+    <!-- KEY DATES -->
+    <section class="section">
+      <h2>{{ $t('home.keyDates.title') }}</h2>
+      <div class="timeline">
+        <div class="timeline-item" v-for="event in keyDates" :key="event.id">
+          <div class="timeline-date">{{ $t(event.dateKey) }}</div>
+          <div class="timeline-content">
+            <h3>{{ $t(event.titleKey) }}</h3>
+            <p>{{ $t(event.descriptionKey) }}</p>
+          </div>
         </div>
       </div>
     </section>
@@ -58,7 +41,62 @@
 
 <script>
 export default {
-  name: "AboutView"
+  name: "ChallengesView",
+  data() {
+    return {
+      projects: [
+        {
+          id: 1,
+          titleKey: 'home.successfulProjects.items.project1.title',
+          descriptionKey: 'home.successfulProjects.items.project1.text',
+          statusKey: 'home.successfulProjects.items.project1.status'
+        },
+        {
+          id: 2,
+          titleKey: 'home.successfulProjects.items.project2.title',
+          descriptionKey: 'home.successfulProjects.items.project2.text',
+          statusKey: 'home.successfulProjects.items.project2.status'
+        },
+        {
+          id: 3,
+          titleKey: 'home.successfulProjects.items.project3.title',
+          descriptionKey: 'home.successfulProjects.items.project3.text',
+          statusKey: 'home.successfulProjects.items.project3.status'
+        }
+      ],
+      faq: [
+        {
+          id: 1,
+          questionKey: 'home.faq.items.faq1.question',
+          answerKey: 'home.faq.items.faq1.answer'
+        },
+        {
+          id: 2,
+          questionKey: 'home.faq.items.faq2.question',
+          answerKey: 'home.faq.items.faq2.answer'
+        },
+        {
+          id: 3,
+          questionKey: 'home.faq.items.faq3.question',
+          answerKey: 'home.faq.items.faq3.answer'
+        }
+      ],
+      keyDates: [
+        {
+          id: 1,
+          dateKey: 'home.keyDates.items.date1.date',
+          titleKey: 'home.keyDates.items.date1.title',
+          descriptionKey: 'home.keyDates.items.date1.text'
+        },
+        {
+          id: 2,
+          dateKey: 'home.keyDates.items.date2.date',
+          titleKey: 'home.keyDates.items.date2.title',
+          descriptionKey: 'home.keyDates.items.date2.text'
+        }
+      ]
+    }
+  }
 }
 </script>
 

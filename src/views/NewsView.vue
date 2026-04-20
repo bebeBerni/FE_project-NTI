@@ -1,64 +1,37 @@
 <template>
-  <div class="section-wrapper">
-    <!-- ABOUT -->
-    <section class="section">
-      <h2>{{ $t('home.about.title') }}</h2>
-      <p>{{ $t('home.about.text') }}</p>
-    </section>
-
-    <!-- MISSION -->
-    <section class="section alt-section">
-      <h2>{{ $t('home.mission.title') }}</h2>
-      <p>{{ $t('home.mission.text') }}</p>
-    </section>
-
-    <!-- PILLARS -->
-    <section class="section">
-      <h2>{{ $t('home.pillars.title') }}</h2>
-      <div class="card-grid three-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.education.title') }}</h3>
-          <p>{{ $t('home.pillars.items.education.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.innovation.title') }}</h3>
-          <p>{{ $t('home.pillars.items.innovation.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.collaboration.title') }}</h3>
-          <p>{{ $t('home.pillars.items.collaboration.text') }}</p>
-        </div>
+  <section class="section">
+    <h2>{{ $t('home.news.title') }}</h2>
+    <div class="card-grid three-columns">
+      <div class="info-card" v-for="newsItem in news" :key="newsItem.id">
+        <h3>{{ $t(newsItem.titleKey) }}</h3>
+        <p>{{ $t(newsItem.summaryKey) }}</p>
+        <small>{{ $t(newsItem.dateKey) }}</small>
       </div>
-    </section>
-
-    <!-- ECOSYSTEM -->
-    <section class="section alt-section">
-      <h2>{{ $t('home.ecosystem.title') }}</h2>
-      <div class="card-grid four-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.students.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.students.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.companies.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.companies.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.mentors.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.mentors.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.administration.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.administration.text') }}</p>
-        </div>
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
 </template>
 
 <script>
 export default {
-  name: "AboutView"
+  name: "NewsView",
+  data() {
+    return {
+      news: [
+        {
+          id: 1,
+          titleKey: 'home.news.items.news1.title',
+          summaryKey: 'home.news.items.news1.text',
+          dateKey: 'home.news.items.news1.date'
+        },
+        {
+          id: 2,
+          titleKey: 'home.news.items.news2.title',
+          summaryKey: 'home.news.items.news2.text',
+          dateKey: 'home.news.items.news2.date'
+        }
+      ]
+    }
+  }
 }
 </script>
 

@@ -1,69 +1,18 @@
 <template>
-  <div class="section-wrapper">
-    <!-- ABOUT -->
-    <section class="section">
-      <h2>{{ $t('home.about.title') }}</h2>
-      <p>{{ $t('home.about.text') }}</p>
-    </section>
-
-    <!-- MISSION -->
-    <section class="section alt-section">
-      <h2>{{ $t('home.mission.title') }}</h2>
-      <p>{{ $t('home.mission.text') }}</p>
-    </section>
-
-    <!-- PILLARS -->
-    <section class="section">
-      <h2>{{ $t('home.pillars.title') }}</h2>
-      <div class="card-grid three-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.education.title') }}</h3>
-          <p>{{ $t('home.pillars.items.education.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.innovation.title') }}</h3>
-          <p>{{ $t('home.pillars.items.innovation.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.collaboration.title') }}</h3>
-          <p>{{ $t('home.pillars.items.collaboration.text') }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ECOSYSTEM -->
-    <section class="section alt-section">
-      <h2>{{ $t('home.ecosystem.title') }}</h2>
-      <div class="card-grid four-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.students.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.students.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.companies.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.companies.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.mentors.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.mentors.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.administration.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.administration.text') }}</p>
-        </div>
-      </div>
-    </section>
-  </div>
+  <section class="section">
+    <h2>Kontakt</h2>
+    <p>Email: info@nti.sk</p>
+    <p>Tel: +421 xxx xxx xxx</p>
+  </section>
 </template>
 
 <script>
 export default {
-  name: "AboutView"
+  name: "ContactView"
 }
 </script>
 
 <style scoped>
-
 /* RESET + BASE */
 * {
   box-sizing: border-box;
@@ -284,5 +233,4 @@ body {
     flex-direction: column;
   }
 }
-
 </style>

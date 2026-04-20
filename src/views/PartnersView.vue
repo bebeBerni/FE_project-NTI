@@ -1,55 +1,23 @@
 <template>
-  <div class="section-wrapper">
-    <!-- ABOUT -->
+  <div>
+    <!-- PARTNERS -->
     <section class="section">
-      <h2>{{ $t('home.about.title') }}</h2>
-      <p>{{ $t('home.about.text') }}</p>
-    </section>
-
-    <!-- MISSION -->
-    <section class="section alt-section">
-      <h2>{{ $t('home.mission.title') }}</h2>
-      <p>{{ $t('home.mission.text') }}</p>
-    </section>
-
-    <!-- PILLARS -->
-    <section class="section">
-      <h2>{{ $t('home.pillars.title') }}</h2>
-      <div class="card-grid three-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.education.title') }}</h3>
-          <p>{{ $t('home.pillars.items.education.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.innovation.title') }}</h3>
-          <p>{{ $t('home.pillars.items.innovation.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.pillars.items.collaboration.title') }}</h3>
-          <p>{{ $t('home.pillars.items.collaboration.text') }}</p>
+      <h2>{{ $t('home.partners.title') }}</h2>
+      <div class="card-grid four-columns">
+        <div class="info-card" v-for="partner in partners" :key="partner.id">
+          <h3>{{ $t(partner.nameKey) }}</h3>
+          <p>{{ $t(partner.descriptionKey) }}</p>
         </div>
       </div>
     </section>
 
-    <!-- ECOSYSTEM -->
+    <!-- MENTORS -->
     <section class="section alt-section">
-      <h2>{{ $t('home.ecosystem.title') }}</h2>
-      <div class="card-grid four-columns">
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.students.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.students.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.companies.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.companies.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.mentors.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.mentors.text') }}</p>
-        </div>
-        <div class="info-card">
-          <h3>{{ $t('home.ecosystem.items.administration.title') }}</h3>
-          <p>{{ $t('home.ecosystem.items.administration.text') }}</p>
+      <h2>{{ $t('home.mentors.title') }}</h2>
+      <div class="card-grid three-columns">
+        <div class="info-card" v-for="mentor in mentors" :key="mentor.id">
+          <h3>{{ mentor.name }}</h3>
+          <p>{{ $t(mentor.specializationKey) }}</p>
         </div>
       </div>
     </section>
@@ -58,7 +26,22 @@
 
 <script>
 export default {
-  name: "AboutView"
+  name: "PartnersView",
+  data() {
+    return {
+      partners: [
+        { id: 1, nameKey: 'home.partners.items.partner1.name', descriptionKey: 'home.partners.items.partner1.text' },
+        { id: 2, nameKey: 'home.partners.items.partner2.name', descriptionKey: 'home.partners.items.partner2.text' },
+        { id: 3, nameKey: 'home.partners.items.partner3.name', descriptionKey: 'home.partners.items.partner3.text' },
+        { id: 4, nameKey: 'home.partners.items.partner4.name', descriptionKey: 'home.partners.items.partner4.text' }
+      ],
+      mentors: [
+        { id: 1, name: 'Dr. Anna Smith', specializationKey: 'home.mentors.items.mentor1' },
+        { id: 2, name: 'John Miller', specializationKey: 'home.mentors.items.mentor2' },
+        { id: 3, name: 'Emma Brown', specializationKey: 'home.mentors.items.mentor3' }
+      ]
+    }
+  }
 }
 </script>
 

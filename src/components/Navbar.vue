@@ -9,10 +9,15 @@
 
       <!-- NAV LINKS -->
       <ul class="nav-links">
-        <li><router-link to="/">{{ $t('nav.home') }}</router-link></li>
-        <li><router-link to="/projects">{{ $t('nav.projects') }}</router-link></li>
-        <li><router-link to="/teams">{{ $t('nav.teams') }}</router-link></li>
-      </ul>
+  <li><router-link to="/">{{ $t('nav.home') }}</router-link></li>
+  <li><router-link to="/o-nti">{{ $t('nav.about') }}</router-link></li>
+  <li><router-link to="/projects">{{ $t('nav.projects') }}</router-link></li>
+  <li><router-link to="/teams">{{ $t('nav.teams') }}</router-link></li>
+  <li><router-link to="/partneri-mentori">{{ $t('nav.partners') }}</router-link></li>
+  <li><router-link to="/vyzvy-a-terminy">{{ $t('nav.challenges') }}</router-link></li>
+  <li><router-link to="/novinky">{{ $t('nav.news') }}</router-link></li>
+  <li><router-link to="/kontakt">{{ $t('nav.contact') }}</router-link></li>
+</ul>
 
       <!-- RIGHT SIDE -->
       <div class="right-section">
