@@ -5,12 +5,14 @@
     <form class="auth-form" @submit.prevent="submitForm">
 
       <!-- ROLE -->
-      <select v-model="form.role">
+      <select v-model="form.role" :class="{ 'error-border': errors.role }">
         <option disabled value="">Select role</option>
         <option value="student">Student</option>
         <option value="company">Company</option>
         <option value="mentor">Mentor</option>
       </select>
+
+      <p v-if="errors.role" class="error">{{ errors.role }}</p>
 
       <!-- NAME -->
       <div v-if="form.role === 'student' || form.role === 'mentor'" class="name-row">
@@ -48,7 +50,9 @@
         <input v-model="form.specialization" type="text" placeholder="Specialization" />
       </div>
 
-      <button type="submit">Register</button>
+      <button type="submit" :disabled="!form.role">
+        Register
+      </button>
     </form>
 
     <p class="auth-switch">
@@ -80,19 +84,23 @@ export default {
     }
   },
   methods: {
-    validate() {
-      this.errors = {}
+   validate() {
+  this.errors = {}
 
-      if (this.form.password.length < 6) {
-        this.errors.password = "Password must be at least 6 characters"
-      }
+  if (!this.form.role) {
+    this.errors.role = "Please select a role"
+  }
 
-      if (this.form.password !== this.form.password_confirmation) {
-        this.errors.password_confirmation = "Passwords do not match"
-      }
+  if (this.form.password.length < 6) {
+    this.errors.password = "Password must be at least 6 characters"
+  }
 
-      return Object.keys(this.errors).length === 0
-    },
+  if (this.form.password !== this.form.password_confirmation) {
+    this.errors.password_confirmation = "Passwords do not match"
+  }
+
+  return Object.keys(this.errors).length === 0
+},
 
     submitForm() {
       if (!this.validate()) return
@@ -104,6 +112,11 @@ export default {
 </script>
 
 <style scoped>
+
+select.error-border {
+  border-color: red;
+}
+
 .auth-page {
   max-width: 450px;
   margin: 60px auto;
