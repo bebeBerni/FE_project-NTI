@@ -4,7 +4,9 @@ import api from '../api/axios'
 type User = {
   id: number
   email: string
-  name?: string
+  first_name: string
+  last_name: string
+  role: 'admin' | 'student' | 'mentor' | 'company'
 }
 
 type AuthState = {
@@ -49,7 +51,7 @@ export const useAuthStore = defineStore('auth', {
         this.loading = false
       }
     },
-
+// lOGOUT
     async logout() {
       try {
         await api.post('/auth/logout')
@@ -61,5 +63,11 @@ export const useAuthStore = defineStore('auth', {
         localStorage.removeItem('token')
       }
     },
+//REGISTER
+async register_admin(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string){},
+async register_student(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string, faculty: string, department: string, study_program: string,year_of_study: number){},
+async register_mentor(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string, specialization: string, bio: string){},
+async register_company(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string, company_name: string, ico: string, description: string, website: string, address: string){},
+
   },
 })
