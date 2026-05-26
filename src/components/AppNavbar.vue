@@ -42,9 +42,9 @@
   </nav>
 </template>
 
-<script>
+<script lang="ts">
 export default {
-  name: "Navbar",
+  name: "ApNavbar",
 
   watch: {
     '$i18n.locale'(newLang) {

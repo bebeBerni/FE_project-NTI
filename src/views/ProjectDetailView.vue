@@ -9,56 +9,78 @@
       <p><strong>Status:</strong> {{ project.status }}</p>
       <p><strong>Description:</strong> {{ project.description }}</p>
 
-      <router-link to="/projects" class="back-btn">Back to Projects</router-link>
+      <router-link to="/projects" class="back-btn">
+        Back to Projects
+      </router-link>
     </div>
   </div>
 
   <div v-else class="not-found">
     <h1>Project not found</h1>
-    <router-link to="/projects" class="back-btn">Back to Projects</router-link>
+    <router-link to="/projects" class="back-btn">
+      Back to Projects
+    </router-link>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+type Project = {
+  id: number
+  title: string
+  type: string
+  company: string
+  budget: string
+  status: string
+  description: string
+}
+
 export default {
   name: "ProjectDetailView",
+
   data() {
+    const projects: Project[] = [
+      {
+        id: 1,
+        title: "AI Task Manager",
+        type: "Company Project",
+        company: "TechCorp",
+        budget: "€2000",
+        status: "Open",
+        description: "A smart system for managing tasks using artificial intelligence."
+      },
+      {
+        id: 2,
+        title: "Student Collaboration Platform",
+        type: "Student Idea",
+        company: "—",
+        budget: "€0",
+        status: "In Progress",
+        description:
+          "A platform where students can collaborate on projects, share files, and communicate."
+      },
+      {
+        id: 3,
+        title: "E-commerce Recommendation System",
+        type: "Company Project",
+        company: "ShopSmart",
+        budget: "€3500",
+        status: "Open",
+        description:
+          "A recommendation engine for online stores based on customer behavior."
+      }
+    ]
+
     return {
-      projects: [
-        {
-          id: 1,
-          title: "AI Task Manager",
-          type: "Company Project",
-          company: "TechCorp",
-          budget: "€2000",
-          status: "Open",
-          description: "A smart system for managing tasks using artificial intelligence."
-        },
-        {
-          id: 2,
-          title: "Student Collaboration Platform",
-          type: "Student Idea",
-          company: "—",
-          budget: "€0",
-          status: "In Progress",
-          description: "A platform where students can collaborate on projects, share files, and communicate."
-        },
-        {
-          id: 3,
-          title: "E-commerce Recommendation System",
-          type: "Company Project",
-          company: "ShopSmart",
-          budget: "€3500",
-          status: "Open",
-          description: "A recommendation engine for online stores based on customer behavior."
-        }
-      ],
-      project: null
+      projects,
+      project: null as Project | null
     }
   },
+
   created() {
     const projectId = Number(this.$route.params.id)
-    this.project = this.projects.find(project => project.id === projectId) || null
+
+    this.project =
+      this.projects.find((p: Project) => p.id === projectId) || null
   }
 }
 </script>

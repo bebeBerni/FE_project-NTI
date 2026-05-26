@@ -6,10 +6,10 @@
   </section>
 </template>
 
-<script>
-export default {
+<script setup lang="ts">
+defineOptions({
   name: "ContactView"
-}
+})
 </script>
 
 <style scoped>

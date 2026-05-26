@@ -19,46 +19,65 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+type Team = {
+  id: number
+  name: string
+  leader: string
+  members: number
+  project: string
+  status: string
+  description: string
+}
+
 export default {
   name: "TeamDetailView",
+
   data() {
+    const teams: Team[] = [
+      {
+        id: 1,
+        name: "CodeCrafters",
+        leader: "Anna Smith",
+        members: 4,
+        project: "Smart Task Manager",
+        status: "Active",
+        description:
+          "A team focused on building smart productivity solutions for students and companies."
+      },
+      {
+        id: 2,
+        name: "TechNova",
+        leader: "John Miller",
+        members: 3,
+        project: "AI Project Matcher",
+        status: "Pending",
+        description:
+          "A development team working on matching students and companies through intelligent project selection."
+      },
+      {
+        id: 3,
+        name: "NextGen Devs",
+        leader: "Emma Brown",
+        members: 5,
+        project: "Student Collaboration Platform",
+        status: "Approved",
+        description:
+          "A team creating a platform for communication, file sharing, and project collaboration."
+      }
+    ]
+
     return {
-      teams: [
-        {
-          id: 1,
-          name: "CodeCrafters",
-          leader: "Anna Smith",
-          members: 4,
-          project: "Smart Task Manager",
-          status: "Active",
-          description: "A team focused on building smart productivity solutions for students and companies."
-        },
-        {
-          id: 2,
-          name: "TechNova",
-          leader: "John Miller",
-          members: 3,
-          project: "AI Project Matcher",
-          status: "Pending",
-          description: "A development team working on matching students and companies through intelligent project selection."
-        },
-        {
-          id: 3,
-          name: "NextGen Devs",
-          leader: "Emma Brown",
-          members: 5,
-          project: "Student Collaboration Platform",
-          status: "Approved",
-          description: "A team creating a platform for communication, file sharing, and project collaboration."
-        }
-      ],
-      team: null
+      teams,
+      team: null as Team | null
     }
   },
+
   created() {
     const teamId = Number(this.$route.params.id)
-    this.team = this.teams.find(team => team.id === teamId) || null
+
+    this.team =
+      this.teams.find((t: Team) => t.id === teamId) || null
   }
 }
 </script>
