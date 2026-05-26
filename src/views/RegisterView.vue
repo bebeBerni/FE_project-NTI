@@ -33,7 +33,6 @@
       <input v-model="form.password" type="password" placeholder="Password" />
       <input v-model="form.password_confirmation" type="password" placeholder="Confirm Password" />
 
-      <!-- ERRORS -->
       <p v-if="errors.password" class="error">{{ errors.password }}</p>
       <p v-if="errors.password_confirmation" class="error">{{ errors.password_confirmation }}</p>
 
@@ -62,9 +61,33 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+
+type Role = "" | "student" | "company" | "mentor"
+
+type Form = {
+  role: Role
+  name: string
+  surname: string
+  company_name: string
+  ico: string
+  email: string
+  password: string
+  password_confirmation: string
+  faculty: string
+  department: string
+  specialization: string
+}
+
+type Errors = {
+  role?: string
+  password?: string
+  password_confirmation?: string
+}
+
 export default {
   name: "RegisterView",
+
   data() {
     return {
       form: {
@@ -79,28 +102,30 @@ export default {
         faculty: "",
         department: "",
         specialization: ""
-      },
-      errors: {}
+      } as Form,
+
+      errors: {} as Errors
     }
   },
+
   methods: {
-   validate() {
-  this.errors = {}
+    validate(): boolean {
+      this.errors = {}
 
-  if (!this.form.role) {
-    this.errors.role = "Please select a role"
-  }
+      if (!this.form.role) {
+        this.errors.role = "Please select a role"
+      }
 
-  if (this.form.password.length < 6) {
-    this.errors.password = "Password must be at least 6 characters"
-  }
+      if (this.form.password.length < 6) {
+        this.errors.password = "Password must be at least 6 characters"
+      }
 
-  if (this.form.password !== this.form.password_confirmation) {
-    this.errors.password_confirmation = "Passwords do not match"
-  }
+      if (this.form.password !== this.form.password_confirmation) {
+        this.errors.password_confirmation = "Passwords do not match"
+      }
 
-  return Object.keys(this.errors).length === 0
-},
+      return Object.keys(this.errors).length === 0
+    },
 
     submitForm() {
       if (!this.validate()) return
@@ -110,90 +135,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-select.error-border {
-  border-color: red;
-}
-
-.auth-page {
-  max-width: 450px;
-  margin: 60px auto;
-  text-align: center;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px; 
-}
-
-/* NAME row */
-.name-row {
-  display: flex;
-  gap: 12px;
-}
-
-.name-row input {
-  width: 100%;
-}
-
-/* INPUTS */
-input,
-select {
-  padding: 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  width: 100%;
-  box-sizing: border-box;
-  font-size: 14px;
-}
-
-/* FOCUS */
-input:focus,
-select:focus {
-  outline: none;
-  border-color: #42b983;
-}
-
-/* BUTTON */
-button {
-  padding: 12px;
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #369f6e;
-}
-
-/* ERROR */
-.error {
-  color: red;
-  font-size: 13px;
-  text-align: left;
-  margin-top: -8px;
-}
-
-/* LOGIN LINK */
-.auth-switch {
-  margin-top: 20px;
-  color: #555;
-}
-
-.auth-switch a {
-  color: #42b983;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.auth-switch a:hover {
-  text-decoration: underline;
-}
-</style>
