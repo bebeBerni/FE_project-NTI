@@ -1,21 +1,34 @@
 <template>
   <div class="projects-page">
     <div class="page-header">
-      <h1>Projects</h1>
-      <p>Explore available projects from companies and student teams.</p>
-    </div>
+     <h1>{{ $t('projects.title') }}</h1>
+<p>{{ $t('projects.description') }}</p>
+</div>
 
     <div class="projects-grid">
       <div class="project-card" v-for="project in projects" :key="project.id">
         <h2>{{ project.title }}</h2>
-        <p><strong>Type:</strong> {{ project.type }}</p>
-        <p><strong>Company:</strong> {{ project.company }}</p>
-        <p><strong>Budget:</strong> {{ project.budget }}</p>
-        <p><strong>Status:</strong> {{ project.status }}</p>
+<p>
+  <strong>{{ $t('projects.type') }}:</strong>
+  {{ $t(`projects.types.${project.type}`) }}
+</p>
 
-        <button class="view-btn">View Details</button>
+<p>
+  <strong>{{ $t('projects.company') }}:</strong>{{ project.company }}
+</p>
+
+<p>
+  <strong>{{ $t('projects.budget') }}:</strong>
+  {{ project.budget }}
+</p>
+
+<p>
+  <strong>{{ $t('projects.status') }}:</strong>
+  {{ $t(`projects.statuses.${project.status}`) }}
+</p>
+        <button class="view-btn">{{ $t('projects.viewDetails') }}</button>
         <router-link :to="`/projects/${project.id}`" class="view-btn">
-          View Details
+          {{ $t('projects.viewDetails') }}
         </router-link>
       </div>
     </div>
@@ -27,32 +40,32 @@ export default {
   name: "ProjectsView",
   data() {
     return {
-      projects: [
-        {
-          id: 1,
-          title: "AI Task Manager",
-          type: "Company Project",
-          company: "TechCorp",
-          budget: "€2000",
-          status: "Open"
-        },
-        {
-          id: 2,
-          title: "Student Collaboration Platform",
-          type: "Student Idea",
-          company: "—",
-          budget: "€0",
-          status: "In Progress"
-        },
-        {
-          id: 3,
-          title: "E-commerce Recommendation System",
-          type: "Company Project",
-          company: "ShopSmart",
-          budget: "€3500",
-          status: "Open"
-        }
-      ]
+   projects: [
+  {
+    id: 1,
+    title: "AI Task Manager",
+    type: "company",
+    company: "TechCorp",
+    budget: "€2000",
+    status: "open"
+  },
+  {
+    id: 2,
+    title: "Student Collaboration Platform",
+    type: "student",
+    company: "—",
+    budget: "€0",
+    status: "progress"
+  },
+  {
+    id: 3,
+    title: "E-commerce Recommendation System",
+    type: "company",
+    company: "ShopSmart",
+    budget: "€3500",
+    status: "open"
+  }
+]
     }
   }
 }

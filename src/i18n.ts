@@ -201,6 +201,26 @@ const messages = {
         text: 'This platform is prepared for bilingual support with Slovak and English content.'
       }
     },
+    //ide meg a project
+  projects: {
+  title: "Projects",
+  description: "Explore available projects from companies and student teams.",
+  type: "Type",
+  company: "Company",
+  budget: "Budget",
+  status: "Status",
+  viewDetails: "View Details",
+
+  types: {
+    company: "Company Project",
+    student: "Student Idea"
+  },
+
+  statuses: {
+    open: "Open",
+    progress: "In Progress"
+  }
+},
      teams: {
       title: "Teams",
       description: "Browse student teams participating in projects.",
@@ -418,6 +438,25 @@ const messages = {
         text: 'Táto platforma je pripravená na dvojjazyčnú podporu v slovenčine a angličtine.'
       }
     },
+        projects: {
+  title: "Projekty",
+  description: "Preskúmajte dostupné projekty od firiem a študentských tímov.",
+  type: "Typ",
+  company: "Firma",
+  budget: "Rozpočet",
+  status: "Stav",
+  viewDetails: "Zobraziť detaily",
+
+  types: {
+    company: "Firemný projekt",
+    student: "Študentský nápad"
+  },
+
+  statuses: {
+    open: "Otvorený",
+    progress: "Prebieha"
+  }
+},
     teams: {
       title: "Tímy",
       description: "Prehliadajte študentské tímy zapojené do projektov.",
@@ -432,7 +471,8 @@ const messages = {
         pending: "Čakajúci",
         approved: "Schválený"
       }
-    }
+    },
+
   }
 }
 
