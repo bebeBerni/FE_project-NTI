@@ -40,3 +40,48 @@ const handleLogin = async () => {
   }
 }
 </script>
+
+
+
+<style scoped>
+.auth-page {
+  max-width: 400px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 10px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #369f6e;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.auth-switch {
+  margin-top: 20px;
+  color: #555;
+}
+</style>

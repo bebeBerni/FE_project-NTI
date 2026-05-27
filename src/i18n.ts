@@ -200,6 +200,21 @@ const messages = {
         title: 'Language Support',
         text: 'This platform is prepared for bilingual support with Slovak and English content.'
       }
+    },
+     teams: {
+      title: "Teams",
+      description: "Browse student teams participating in projects.",
+      leader: "Leader",
+      members: "Members",
+      project: "Project",
+      status: "Status",
+      viewDetails: "View Details",
+
+      statuses: {
+        active: "Active",
+        pending: "Pending",
+        approved: "Approved"
+      }
     }
   },
 
@@ -401,6 +416,21 @@ const messages = {
       language: {
         title: 'Jazyková podpora',
         text: 'Táto platforma je pripravená na dvojjazyčnú podporu v slovenčine a angličtine.'
+      }
+    },
+    teams: {
+      title: "Tímy",
+      description: "Prehliadajte študentské tímy zapojené do projektov.",
+      leader: "Vedúci",
+      members: "Členovia",
+      project: "Projekt",
+      status: "Stav",
+      viewDetails: "Zobraziť detaily",
+
+      statuses: {
+        active: "Aktívny",
+        pending: "Čakajúci",
+        approved: "Schválený"
       }
     }
   }

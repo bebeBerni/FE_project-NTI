@@ -13,6 +13,7 @@
         <p><strong>Budget:</strong> {{ project.budget }}</p>
         <p><strong>Status:</strong> {{ project.status }}</p>
 
+        <button class="view-btn">View Details</button>
         <router-link :to="`/projects/${project.id}`" class="view-btn">
           View Details
         </router-link>

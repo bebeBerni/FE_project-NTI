@@ -135,3 +135,89 @@ export default {
   }
 }
 </script>
+<style scoped>
+
+select.error-border {
+  border-color: red;
+}
+
+.auth-page {
+  max-width: 450px;
+  margin: 60px auto;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* NAME row */
+.name-row {
+  display: flex;
+  gap: 12px;
+}
+
+.name-row input {
+  width: 100%;
+}
+
+/* INPUTS */
+input,
+select {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+/* FOCUS */
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #42b983;
+}
+
+/* BUTTON */
+button {
+  padding: 12px;
+  background-color: #42b983;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #369f6e;
+}
+
+/* ERROR */
+.error {
+  color: red;
+  font-size: 13px;
+  text-align: left;
+  margin-top: -8px;
+}
+
+/* LOGIN LINK */
+.auth-switch {
+  margin-top: 20px;
+  color: #555;
+}
+
+.auth-switch a {
+  color: #42b983;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
+}
+</style>

@@ -1,20 +1,36 @@
 <template>
   <div class="teams-page">
     <div class="page-header">
-      <h1>Teams</h1>
-      <p>Browse student teams participating in projects.</p>
+      <h1>{{ $t('teams.title') }}</h1>
+      <p>{{ $t('teams.description') }}</p>
     </div>
 
     <div class="teams-grid">
       <div class="team-card" v-for="team in teams" :key="team.id">
         <h2>{{ team.name }}</h2>
-        <p><strong>Leader:</strong> {{ team.leader }}</p>
-        <p><strong>Members:</strong> {{ team.members }}</p>
-        <p><strong>Project:</strong> {{ team.project }}</p>
-        <p><strong>Status:</strong> {{ team.status }}</p>
+
+        <p>
+          <strong>{{ $t('teams.leader') }}:</strong>
+          {{ team.leader }}
+        </p>
+
+        <p>
+          <strong>{{ $t('teams.members') }}:</strong>
+          {{ team.members }}
+        </p>
+
+        <p>
+          <strong>{{ $t('teams.project') }}:</strong>
+          {{ team.project }}
+        </p>
+
+        <p>
+          <strong>{{ $t('teams.status') }}:</strong>
+          {{ team.status }}
+        </p>
 
         <router-link :to="`/teams/${team.id}`" class="view-btn">
-          View Details
+          {{ $t('teams.viewDetails') }}
         </router-link>
       </div>
     </div>
@@ -26,32 +42,32 @@ export default {
   name: "TeamView",
   data() {
     return {
-      teams: [
-        {
-          id: 1,
-          name: "CodeCrafters",
-          leader: "Anna Smith",
-          members: 4,
-          project: "Smart Task Manager",
-          status: "Active"
-        },
-        {
-          id: 2,
-          name: "TechNova",
-          leader: "John Miller",
-          members: 3,
-          project: "AI Project Matcher",
-          status: "Pending"
-        },
-        {
-          id: 3,
-          name: "NextGen Devs",
-          leader: "Emma Brown",
-          members: 5,
-          project: "Student Collaboration Platform",
-          status: "Approved"
-        }
-      ]
+teams: [
+  {
+    id: 1,
+    name: "CodeCrafters",
+    leader: "Anna Smith",
+    members: 4,
+    project: "Smart Task Manager",
+    status: this.$t('teams.statuses.active')
+  },
+  {
+    id: 2,
+    name: "TechNova",
+    leader: "John Miller",
+    members: 3,
+    project: "AI Project Matcher",
+    status: this.$t('teams.statuses.pending')
+  },
+  {
+    id: 3,
+    name: "NextGen Devs",
+    leader: "Emma Brown",
+    members: 5,
+    project: "Student Collaboration Platform",
+    status: this.$t('teams.statuses.approved')
+  }
+]
     }
   }
 }
