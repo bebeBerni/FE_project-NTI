@@ -31,23 +31,44 @@
         </select>
 
         <!-- AUTH -->
-        <router-link to="/login" class="login-btn">
-          {{ $t('nav.login') }}
-        </router-link>
+<template v-if="authStore.isAuthenticated">
 
-        <router-link to="/register" class="register-btn">
+  <span class="user-name">
+    {{ authStore.user?.first_name }}
+  </span>
+
+  <button
+    @click="authStore.logout()"
+    class="logout-btn"
+  >
+    Logout
+  </button>
+
+</template>
+
+<template v-else>
+
+  <router-link to="/login" class="login-btn">
+    {{ $t('nav.login') }}
+  </router-link>
+    <router-link to="/register" class="register-btn">
           {{ $t('nav.register') }}
         </router-link>
-
+</template>
       </div>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
+import { useAuthStore } from '@/stores/auth'
 export default {
   name: "ApNavbar",
-
+data() {
+    return {
+      authStore: useAuthStore()
+    }
+  },
   watch: {
     '$i18n.locale'(newLang) {
       localStorage.setItem('lang', newLang)
@@ -144,5 +165,24 @@ export default {
 
 .register-btn:hover {
   background-color: #369f6e;
+}
+
+.user-name {
+  color: white;
+  font-weight: 600;
+}
+
+.logout-btn {
+  padding: 8px 14px;
+  border: none;
+  background-color: #e74c3c;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.logout-btn:hover {
+  background-color: #c0392b;
 }
 </style>

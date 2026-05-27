@@ -87,6 +87,9 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.data.user
 
         localStorage.setItem('token', response.data.token)
+
+        api.defaults.headers.common['Authorization'] =`Bearer ${response.data.token}`
+
       } catch (error: unknown) {
         if (error instanceof Error) {
           this.error = error.message
@@ -99,6 +102,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 // lOGOUT
+//delete :Pinia state,localStorage tokent,axios Bearer tokent,+ after refresh user not be logged in
     async logout() {
       try {
         await api.post('/logout')
@@ -107,6 +111,8 @@ export const useAuthStore = defineStore('auth', {
       } finally {
         this.token = null
         this.user = null
+
+        delete api.defaults.headers.common['Authorization']
         localStorage.removeItem('token')
       }
     },
@@ -206,6 +212,26 @@ async register_company(data: RegisterCompanyData) {
   } finally {
     this.loading = false
   }
+},
+async fetchUser() {
+  if (!this.token) return
+
+  this.loading = true
+
+  try {
+
+    const response = await api.get('/me')
+
+    this.user = response.data
+
+  } catch (error) {
+
+    this.logout()
+
+  } finally {
+
+    this.loading = false
+  }
 }
-  },
+},
 })
