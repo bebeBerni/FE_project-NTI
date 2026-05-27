@@ -26,7 +26,7 @@
 
         <p>
           <strong>{{ $t('teams.status') }}:</strong>
-          {{ team.status }}
+          {{ $t(`teams.statuses.${team.status}`) }}
         </p>
 
         <router-link :to="`/teams/${team.id}`" class="view-btn">
@@ -49,7 +49,7 @@ teams: [
     leader: "Anna Smith",
     members: 4,
     project: "Smart Task Manager",
-    status: this.$t('teams.statuses.active')
+    status: "active"
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ teams: [
     leader: "John Miller",
     members: 3,
     project: "AI Project Matcher",
-    status: this.$t('teams.statuses.pending')
+    status: "pending"
   },
   {
     id: 3,
@@ -65,7 +65,7 @@ teams: [
     leader: "Emma Brown",
     members: 5,
     project: "Student Collaboration Platform",
-    status: this.$t('teams.statuses.approved')
+    status: "approved"
   }
 ]
     }
