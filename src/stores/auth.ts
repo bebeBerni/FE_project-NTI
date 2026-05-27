@@ -15,6 +15,53 @@ type AuthState = {
   loading: boolean
   error: string | null
 }
+//STUDENT
+type RegisterStudentData = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  password_confirmation: string
+  phone: string
+  faculty: string
+  department: string
+  study_program: string
+  year_of_study: number
+}
+//ADMIN
+type RegisterAdminData = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  password_confirmation: string
+  phone: string
+}
+//MENTOR
+type RegisterMentorData = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  password_confirmation: string
+  phone: string
+  specialization: string
+  bio: string
+}
+//COMPANY
+type RegisterCompanyData = {
+  first_name: string
+  last_name: string
+  email: string
+  password: string
+  password_confirmation: string
+  phone: string
+  company_name: string
+  ico: string
+  description: string
+  website: string
+  address: string
+}
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
@@ -54,7 +101,7 @@ export const useAuthStore = defineStore('auth', {
 // lOGOUT
     async logout() {
       try {
-        await api.post('/auth/logout')
+        await api.post('/logout')
       } catch (error) {
         console.error('Logout failed', error)
       } finally {
@@ -64,10 +111,101 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 //REGISTER
-async register_admin(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string){},
-async register_student(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string, faculty: string, department: string, study_program: string,year_of_study: number){},
-async register_mentor(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string, specialization: string, bio: string){},
-async register_company(first_name: string, last_name: string, email: string, password: string, password_confirmation: string, phone: string, company_name: string, ico: string, description: string, website: string, address: string){},
 
+  //STUDENT
+async register_student(data: RegisterStudentData) {
+  this.loading = true
+  this.error = null
+
+  try {
+    const response = await api.post(
+      '/register/student',
+      data
+    )
+
+    return response.data
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      this.error = error.message
+    } else {
+      this.error = 'Student registration failed'
+    }
+
+    throw error
+  } finally {
+    this.loading = false
+  }
+},
+
+//ADMIN
+async register_admin(data: RegisterAdminData) {
+  this.loading = true
+  this.error = null
+
+  try {
+    const response = await api.post(
+      '/register/admin',
+      data
+    )
+
+    return response.data
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      this.error = error.message
+    } else {
+      this.error = 'Admin registration failed'
+    }
+
+    throw error
+  } finally {
+    this.loading = false
+  }
+},
+
+//MENTOR
+async register_mentor(data: RegisterMentorData) {
+  this.loading = true
+  this.error = null
+
+  try {
+    const response = await api.post(
+      '/register/mentor',
+      data
+    )
+
+    return response.data
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      this.error = error.message
+    } else {
+      this.error = 'Mentor registration failed'
+    }
+
+    throw error
+  } finally {
+    this.loading = false
+  }
+},
+async register_company(data: RegisterCompanyData) {
+  this.loading = true
+  this.error = null
+
+  try {
+    const response = await api.post(
+      '/register/company',
+      data
+    )
+    return response.data
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      this.error = error.message
+    } else {
+      this.error = 'Company registration failed'
+    }
+    throw error
+  } finally {
+    this.loading = false
+  }
+}
   },
 })
