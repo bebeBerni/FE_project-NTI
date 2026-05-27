@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-
+import { useAuthStore } from "@/stores/auth"
 type Role = "" | "student" | "company" | "mentor"
 
 type Form = {
@@ -127,11 +127,73 @@ export default {
       return Object.keys(this.errors).length === 0
     },
 
-    submitForm() {
-      if (!this.validate()) return
+  async submitForm() {
+     console.log("1. SUBMIT")
+  if (!this.validate()){
+  console.log("2. VALIDATION FAILED")
+  return}
+  console.log("3. VALIDATION OK")
 
-      console.log("Form OK:", this.form)
+  const authStore = useAuthStore()
+console.log("4. ROLE:", this.form.role)
+  try {
+ console.log("5. BEFORE API")
+
+    // STUDENT
+    if (this.form.role === "student") {
+      await authStore.register_student({
+        first_name: this.form.name,
+        last_name: this.form.surname,
+        email: this.form.email,
+        password: this.form.password,
+        password_confirmation: this.form.password_confirmation,
+        phone: "",
+        faculty: this.form.faculty,
+        department: this.form.department,
+        study_program: "",
+        year_of_study: 1
+      })
     }
+
+    // MENTOR
+    if (this.form.role === "mentor") {
+      await authStore.register_mentor({
+        first_name: this.form.name,
+        last_name: this.form.surname,
+        email: this.form.email,
+        password: this.form.password,
+        password_confirmation: this.form.password_confirmation,
+        phone: "",
+        specialization: this.form.specialization,
+        bio: ""
+      })
+    }
+
+    // COMPANY
+    if (this.form.role === "company") {
+      await authStore.register_company({
+        first_name: "",
+        last_name: "",
+        email: this.form.email,
+        password: this.form.password,
+        password_confirmation: this.form.password_confirmation,
+        phone: "",
+        company_name: this.form.company_name,
+        ico: this.form.ico,
+        description: "",
+        website: "",
+        address: ""
+      })
+    }
+
+    console.log("Registration successful")
+
+    this.$router.push("/login")
+
+  } catch (error) {
+    console.error(error)
+  }
+}
   }
 }
 </script>
