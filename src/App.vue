@@ -1,14 +1,22 @@
-<script lang="ts">
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+
 import AppNavbar from './components/AppNavbar.vue'
 import AppFooter from './components/AppFooter.vue'
 
-export default {
-  name: 'App',
-  components: {
-    AppNavbar,
-    AppFooter
+const authStore = useAuthStore()
+
+onMounted(async () => {
+  console.log('APP START')
+
+  if (authStore.token) {
+    console.log('TOKEN EXISTS → FETCH USER')
+    await authStore.fetchUser()
+  } else {
+    console.log('NO TOKEN')
   }
-}
+})
 </script>
 
 

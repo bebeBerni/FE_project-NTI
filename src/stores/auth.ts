@@ -84,10 +84,9 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post('/login', { email, password })
 
         this.token = response.data.token
-        this.user = response.data.user
-
         localStorage.setItem('token', response.data.token)
-
+        await this.fetchUser()
+        
         api.defaults.headers.common['Authorization'] =`Bearer ${response.data.token}`
 
       } catch (error: unknown) {
@@ -214,23 +213,25 @@ async register_company(data: RegisterCompanyData) {
   }
 },
 async fetchUser() {
-  if (!this.token) return
+  console.log('FETCH USER CALLED')
 
-  this.loading = true
+  if (!this.token) {
+    console.log('NO TOKEN IN STORE')
+    return
+  }
 
   try {
-
     const response = await api.get('/me')
 
-    this.user = response.data
+    console.log('ME RESPONSE:', response.data)
+
+    this.user = response.data.user
+
+    console.log('USER SET:', this.user)
 
   } catch (error) {
-
+    console.log('ME ERROR:', error)
     this.logout()
-
-  } finally {
-
-    this.loading = false
   }
 }
 },

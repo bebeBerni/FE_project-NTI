@@ -60,28 +60,25 @@
   </nav>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
-export default {
-  name: "ApNavbar",
-data() {
-    return {
-      authStore: useAuthStore()
-    }
-  },
-  watch: {
-    '$i18n.locale'(newLang) {
-      localStorage.setItem('lang', newLang)
-    }
-  },
+import { onMounted, watch } from 'vue'
 
-  mounted() {
-    const savedLang = localStorage.getItem('lang')
-    if (savedLang) {
-      this.$i18n.locale = savedLang
-    }
+const authStore = useAuthStore()
+
+watch(
+  () => authStore.user,
+  (val) => {
+    console.log('USER CHANGED:', val)
   }
-}
+)
+
+onMounted(() => {
+  const savedLang = localStorage.getItem('lang')
+  if (savedLang) {
+    // $i18n itt külön kezelendő ha kell
+  }
+})
 </script>
 
 <style scoped>
