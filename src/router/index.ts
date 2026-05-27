@@ -7,12 +7,14 @@ import PartnersView from '../views/PartnersView.vue'
 import ChallengesView from '../views/ChallengesView.vue'
 import NewsView from '../views/NewsView.vue'
 import ContactView from '../views/ContactView.vue'
+import DashboardView from '../views/DashboardView.vue'
 
 // existing
 import TeamView from '../views/TeamView.vue'
 import TeamDetailView from '../views/TeamDetailView.vue'
 import ProjectsView from '../views/ProjectView.vue'
 import ProjectDetailView from '../views/ProjectDetailView.vue'
+
 
 const routes: RouteRecordRaw[] = [
   {
@@ -69,6 +71,12 @@ const routes: RouteRecordRaw[] = [
     path: '/projects/:id',
     name: 'project-detail',
     component: ProjectDetailView,
+    props: true,
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: DashboardView,
     props: true,
   },
 

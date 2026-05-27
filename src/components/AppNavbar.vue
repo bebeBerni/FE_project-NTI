@@ -17,6 +17,8 @@
   <li><router-link to="/vyzvy-a-terminy">{{ $t('nav.challenges') }}</router-link></li>
   <li><router-link to="/novinky">{{ $t('nav.news') }}</router-link></li>
   <li><router-link to="/kontakt">{{ $t('nav.contact') }}</router-link></li>
+
+  <li><router-link to="/dashboard">{{ $t('nav.dashboard') }}</router-link></li>
 </ul>
 
       <!-- RIGHT SIDE -->
