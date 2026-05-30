@@ -86,7 +86,7 @@ export const useAuthStore = defineStore('auth', {
         this.token = response.data.token
         localStorage.setItem('token', response.data.token)
         await this.fetchUser()
-        
+
         api.defaults.headers.common['Authorization'] =`Bearer ${response.data.token}`
 
       } catch (error: unknown) {
@@ -149,7 +149,7 @@ async register_admin(data: RegisterAdminData) {
 
   try {
     const response = await api.post(
-      '/register/admin',
+      '/register',
       data
     )
 
@@ -191,6 +191,8 @@ async register_mentor(data: RegisterMentorData) {
     this.loading = false
   }
 },
+
+//COMPANY
 async register_company(data: RegisterCompanyData) {
   this.loading = true
   this.error = null
