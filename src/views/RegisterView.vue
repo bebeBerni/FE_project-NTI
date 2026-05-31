@@ -295,12 +295,12 @@ export default {
   const status = error.response?.status
   const data = error.response?.data
 
-  // 🔴 backend message (pl. 404, 500)
+  //  backend message 404, 500
   if (data?.message) {
     this.errors.general = data.message
   }
 
-  // 🔴 validation errors (Laravel style: { email: ["msg"] })
+  //  validation errors
   if (data && typeof data === "object") {
     for (const key in data) {
       const field = data[key]
@@ -311,7 +311,7 @@ export default {
     }
   }
 
-  // 🔴 fallback HTTP error
+  //   ERROR CODES
   if (!data?.message) {
     switch (status) {
       case 404:
