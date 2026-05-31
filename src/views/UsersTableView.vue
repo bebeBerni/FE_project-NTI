@@ -18,11 +18,10 @@ const loading = ref(false)
 
 const search = ref('')
 
-const page = ref(1)
-const perPage = ref(10)
+
 
 const total = ref(0)
-const totalPages = ref(1)
+
 
 
 // LOAD USERS FUNCTION
@@ -32,8 +31,6 @@ async function loadUsers() {
   try {
     const response = await api.get('/admin/users', {
       params: {
-        page: page.value,
-        per_page: perPage.value,
         search: search.value,
       },
     })
@@ -42,7 +39,7 @@ async function loadUsers() {
 
     users.value = response.data.users ?? []
     total.value = response.data.users?.length ?? 0
-    totalPages.value = response.data.users.last_page ?? 1
+
 
   } catch (error) {
     console.error('Failed to load users:', error)
@@ -56,9 +53,7 @@ watch(search, () => {
   loadUsers()
 })
 
-watch(page, () => {
-  loadUsers()
-})
+
 
 onMounted(() => {
   loadUsers()
