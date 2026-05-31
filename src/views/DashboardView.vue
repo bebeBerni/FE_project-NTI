@@ -1,11 +1,14 @@
-<template>
-  <div class="dashboard-wrapper">
-    <h1>{{ $t('dashboard.title') }}</h1>
-    <p>{{ $t('dashboard.welcomeMessage') }}</p>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import UsersTableView from '@/views/UsersTableView.vue'
 
-    <!-- Placeholder for dashboard content -->
-    <div class="dashboard-content">
-      <p>{{ $t('dashboard.contentPlaceholder') }}</p>
-    </div>
-  </div>
+export default defineComponent({
+  components: {
+    UsersTableView,
+  },
+})
+</script>
+
+<template>
+  <UsersTableView />
 </template>
