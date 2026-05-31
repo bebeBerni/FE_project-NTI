@@ -330,10 +330,33 @@ export default {
 },
 
 async submitForm() {
+   console.log("ROLE BEFORE SUBMIT:", this.form.role)
   if (!this.validate()) return
 
   this.errors = {} as Errors
   this.successMessage = ""
+
+//DEBUG: log form data
+console.log("🔥 FINAL FRONTEND PAYLOAD:", {
+    role: this.form.role,
+    name: this.form.name,
+    surname: this.form.surname,
+    email: this.form.email,
+    phone: this.form.phone,
+    faculty: this.form.faculty,
+    department: this.form.department,
+    study_program: this.form.study_program,
+    year_of_study: this.form.year_of_study,
+    specialization: this.form.specialization,
+    bio: this.form.bio,
+    company_name: this.form.company_name,
+    ico: this.form.ico,
+    website: this.form.website,
+    address: this.form.address,
+    description: this.form.description,
+  })
+
+
 
   try {
     await this.registerByRole()
