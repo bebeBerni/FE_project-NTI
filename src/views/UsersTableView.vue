@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
-import { useDebounceFn } from '@vueuse/core' // hasznalatara majd kell:  npm install @vueuse/core
+
 
 import api from '@/api/axios'
 
@@ -51,14 +51,9 @@ async function loadUsers() {
   }
 }
 
-const debouncedLoad = useDebounceFn(() => {
-  page.value = 1
-  loadUsers()
-}, 500)
 
 watch(search, () => {
-  page.value = 1
-  debouncedLoad()
+  loadUsers()
 })
 
 watch(page, () => {
@@ -252,27 +247,6 @@ onMounted(() => {
   border-top: 1px solid #e5e7eb;
 }
 
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 
-.pagination button {
-  padding: 8px 14px;
-  border: 1px solid #d1d5db;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.pagination button:hover:not(:disabled) {
-  background: #f9fafb;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 </style>
 
