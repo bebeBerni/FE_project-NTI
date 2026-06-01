@@ -135,7 +135,7 @@
 
         <p>
           <strong>Status:</strong>
-          <span :class="['status', getStatusClass(project.status)]">
+          <span :class="['status', getStatusClass(project.status ?? '')]">
             {{ formatStatus(project.status) }}
           </span>
         </p>
@@ -164,8 +164,60 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import api from '@/api/axios'
+import axios from 'axios'
+
+
+interface Team {
+  id: number
+  name: string
+  description?: string
+  created_at?: string
+  my_role?: string
+
+  pivot?: {
+    member_role?: string
+  }
+}
+
+interface Project {
+  id: number
+  title: string
+  description?: string
+  status?: string
+  created_at?: string
+  updated_at?: string
+
+  company?: {
+    company_name?: string
+    name?: string
+  }
+
+  mentor?: {
+    first_name?: string
+    last_name?: string
+  }
+}
+
+interface TeamMember {
+  id: number
+
+  first_name?: string
+  last_name?: string
+  email?: string
+  member_role?: string
+
+  pivot?: {
+    member_role?: string
+  }
+
+  user?: {
+    first_name?: string
+    last_name?: string
+    email?: string
+  }
+}
 
 export default {
   name: 'StudentDashboard',
@@ -177,15 +229,21 @@ export default {
     },
   },
 
-  data() {
-    return {
-      myTeam: null,
-      teamMembers: [],
-      myProject: null,
-      availableProjects: [],
-      availableTeams: [],
-    }
-  },
+data(): {
+  myTeam: Team | null
+  teamMembers: TeamMember[]
+  myProject: Project | null
+  availableProjects: Project[]
+  availableTeams: Team[]
+} {
+  return {
+    myTeam: null,
+    teamMembers: [],
+    myProject: null,
+    availableProjects: [],
+    availableTeams: [],
+  }
+},
 
   mounted() {
     this.loadDashboard()
@@ -209,19 +267,29 @@ export default {
         if (!this.myTeam) {
           this.loadAvailableTeams()
         }
-      } catch (error) {
-        console.error(error)
-        alert('Failed to load dashboard.')
-      }
+      } catch (error: unknown) {
+  if (axios.isAxiosError(error)) {
+    console.log(error.response?.status)
+    console.log(error.response?.data)
+
+    alert(
+      error.response?.data?.message ??
+      'Failed to load dashboard.'
+    )
+  } else {
+    console.error(error)
+    alert('Unexpected error occurred.')
+  }
+}
     },
 
     async loadAvailableProjects() {
       try {
         const response = await api.get('/student/available-projects')
         this.availableProjects = response.data.projects || response.data
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error)
-        alert('Failed to load available projects.')
+        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to load available projects.')
       }
     },
 
@@ -229,13 +297,13 @@ export default {
       try {
         const response = await api.get('/student/available-teams')
         this.availableTeams = response.data.teams || response.data
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error)
-        alert('Failed to load available teams.')
+        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to load available teams.')
       }
     },
 
-    async joinProject(projectId) {
+    async joinProject(projectId : number) {
       try {
         await api.post(`/student/projects/${projectId}/join`)
 
@@ -243,13 +311,13 @@ export default {
 
         this.availableProjects = []
         this.loadDashboard()
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error)
-        alert(error.response?.data?.message || 'Failed to join project.')
+        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to join project.')
       }
     },
 
-    async joinTeam(teamId) {
+    async joinTeam(teamId : number) {
       try {
         await api.post(`/student/teams/${teamId}/join`)
 
@@ -257,9 +325,9 @@ export default {
 
         this.availableTeams = []
         this.loadDashboard()
-      } catch (error) {
+      } catch (error: unknown) {
         console.error(error)
-        alert(error.response?.data?.message || 'Failed to join team.')
+        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to join team.')
       }
     },
 
@@ -271,14 +339,14 @@ export default {
       this.$router.push('/student/teams/create')
     },
 
-    formatDate(date) {
+    formatDate(date : string) {
       return new Date(date).toLocaleDateString()
     },
 
-    formatStatus(status) {
+    formatStatus(status ?: string) {
       if (!status) return 'No status'
 
-      const statuses = {
+      const statuses: Record<string, string> = {
         draft: 'Draft',
         open: 'Open',
         available: 'Available',
@@ -295,8 +363,8 @@ export default {
       return statuses[status] || status
     },
 
-    getStatusClass(status) {
-      const classes = {
+    getStatusClass(status ?: string) {
+      const classes: Record<string, string> = {
         draft: 'status-gray',
         open: 'status-green',
         available: 'status-green',
@@ -310,7 +378,7 @@ export default {
         cancelled: 'status-red',
       }
 
-      return classes[status] || 'status-gray'
+      return classes[status || ''] || 'status-gray'
     },
   },
 }

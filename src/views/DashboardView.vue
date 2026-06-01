@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/block-lang -->
 <template>
   <div>
     <p v-if="loading">Loading...</p>
