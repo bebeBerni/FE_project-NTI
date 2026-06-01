@@ -1,21 +1,80 @@
-
 <template>
+  <div>
+    <p v-if="loading">Loading...</p>
 
-  <!-- all users for admin's dashboard -->
+    <StudentDashboard
+      v-else-if="role === 'student'"
+      :user="user"
+    />
 
-  <h2> Only official admins can access this</h2>
-  <router-link to="/all_users">
-    {{ $t('all_users') }}
-  </router-link>
+    <MentorDashboard
+      v-else-if="role === 'mentor'"
+      :user="user"
+    />
 
-  <br>
+    <CompanyDashboard
+      v-else-if="role === 'company'"
+      :user="user"
+    />
 
-<!-- all mentor for admin/mentor's dashboard -->
+    <AdminDashboard
+      v-else-if="role === 'admin'"
+      :user="user"
+    />
 
-
-  <h2> Only official admins can access this</h2>
-<router-link to="/all_mentors">
-    {{ $t('all_mentors') }}
-  </router-link>
-
+    <p v-else>Unknown role: {{ role }}</p>
+  </div>
 </template>
+
+<script>
+import { useAuthStore } from '@/stores/auth'
+
+import StudentDashboard from '../components/dashboards/StudentDashboard.vue'
+import MentorDashboard from '../components/dashboards/MentorDashboard.vue'
+import CompanyDashboard from '../components/dashboards/CompanyDashboard.vue'
+import AdminDashboard from '../components/dashboards/AdminDashboard.vue'
+
+export default {
+  name: 'DashboardView',
+
+  components: {
+    StudentDashboard,
+    MentorDashboard,
+    CompanyDashboard,
+    AdminDashboard,
+  },
+
+  data() {
+    return {
+      authStore: useAuthStore(),
+      loading: true,
+    }
+  },
+
+  computed: {
+    user() {
+      return this.authStore.user
+    },
+
+    role() {
+      return this.user?.roles?.[0]?.name?.toLowerCase() || ''
+    },
+  },
+
+  async mounted() {
+    if (!this.authStore.token) {
+      this.$router.push('/login')
+      return
+    }
+
+    if (!this.authStore.user) {
+      await this.authStore.fetchUser()
+    }
+
+    this.loading = false
+
+    console.log('DASHBOARD USER:', this.user)
+    console.log('DASHBOARD ROLE:', this.role)
+  },
+}
+</script>

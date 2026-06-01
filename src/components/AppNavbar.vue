@@ -18,7 +18,11 @@
   <li><router-link to="/novinky">{{ $t('nav.news') }}</router-link></li>
   <li><router-link to="/kontakt">{{ $t('nav.contact') }}</router-link></li>
 
-  <li><router-link to="/dashboard">{{ $t('nav.dashboard') }}</router-link></li>
+  <li v-if="authStore.isAuthenticated">
+  <router-link to="/dashboard">
+    {{ $t('nav.dashboard') }}
+  </router-link>
+  </li>
 </ul>
 
       <!-- RIGHT SIDE -->

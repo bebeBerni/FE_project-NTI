@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 import api from '../api/axios'
+import router from '@/router'
 
 type User = {
   id: number
   email: string
   first_name: string
   last_name: string
-  role: 'admin' | 'student' | 'mentor' | 'company'
+  roles: {
+    id: number
+    name: 'admin' | 'student' | 'mentor' | 'company'
+  }[]
 }
 
 type AuthState = {
@@ -85,9 +89,10 @@ export const useAuthStore = defineStore('auth', {
 
         this.token = response.data.token
         localStorage.setItem('token', response.data.token)
-        await this.fetchUser()
 
-        api.defaults.headers.common['Authorization'] =`Bearer ${response.data.token}`
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`
+
+        await this.fetchUser()
 
       } catch (error: unknown) {
         if (error instanceof Error) {
@@ -103,18 +108,20 @@ export const useAuthStore = defineStore('auth', {
 // lOGOUT
 //delete :Pinia state,localStorage tokent,axios Bearer tokent,+ after refresh user not be logged in
     async logout() {
-      try {
-        await api.post('/logout')
-      } catch (error) {
-        console.error('Logout failed', error)
-      } finally {
-        this.token = null
-        this.user = null
+  try {
+    await api.post('/logout')
+  } catch (error) {
+    console.error('Logout failed', error)
+  } finally {
+    this.token = null
+    this.user = null
 
-        delete api.defaults.headers.common['Authorization']
-        localStorage.removeItem('token')
-      }
-    },
+    delete api.defaults.headers.common['Authorization']
+    localStorage.removeItem('token')
+
+    router.push('/')
+  }
+},
 //REGISTER
 
   //STUDENT
@@ -222,6 +229,8 @@ async fetchUser() {
     return
   }
 
+  api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+
   try {
     const response = await api.get('/me')
 
@@ -230,10 +239,11 @@ async fetchUser() {
     this.user = response.data.user
 
     console.log('USER SET:', this.user)
+    console.log('USER ROLE:', this.user?.roles?.[0]?.name)
 
   } catch (error) {
     console.log('ME ERROR:', error)
-    this.logout()
+    await this.logout()
   }
 }
 },

@@ -76,11 +76,13 @@ const routes: RouteRecordRaw[] = [
     props: true,
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: DashboardView,
-    props: true,
-  },
+  path: '/dashboard',
+  name: 'dashboard',
+  component: DashboardView,
+  meta: {
+    requiresAuth: true
+  }
+},
 //Users
 {
   path: "/all_users",
