@@ -8,6 +8,8 @@ import ChallengesView from '../views/ChallengesView.vue'
 import NewsView from '../views/NewsView.vue'
 import ContactView from '../views/ContactView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import UsersTableView from '../views/UsersTableView.vue'
+import MentorsTableView from '../views/MentorsTableView.vue'
 
 // existing
 import TeamView from '../views/TeamView.vue'
@@ -79,6 +81,16 @@ const routes: RouteRecordRaw[] = [
     component: DashboardView,
     props: true,
   },
+//Users
+{
+  path: "/all_users",
+  component: UsersTableView
+},
+//Mentors
+{
+  path: "/all_mentors",
+ component: MentorsTableView
+},
 
   // auth
   {
