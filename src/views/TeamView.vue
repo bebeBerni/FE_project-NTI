@@ -5,28 +5,45 @@
       <p>{{ $t('teams.description') }}</p>
     </div>
 
-    <div class="teams-grid">
+    <p v-if="loading" class="message">
+      Loading teams...
+    </p>
+
+    <p v-else-if="errorMessage" class="error">
+      {{ errorMessage }}
+    </p>
+
+    <p v-else-if="teams.length === 0" class="message">
+      No teams found.
+    </p>
+
+    <div v-else class="teams-grid">
       <div class="team-card" v-for="team in teams" :key="team.id">
         <h2>{{ team.name }}</h2>
 
         <p>
           <strong>{{ $t('teams.leader') }}:</strong>
-          {{ team.leader }}
+          {{ getLeaderName(team) }}
         </p>
 
         <p>
           <strong>{{ $t('teams.members') }}:</strong>
-          {{ team.members }}
+          {{ team.students?.length || 0 }}
+        </p>
+
+        <p>
+          <strong>Mentors:</strong>
+          {{ team.mentors?.length || 0 }}
         </p>
 
         <p>
           <strong>{{ $t('teams.project') }}:</strong>
-          {{ team.project }}
+          {{ getProjectTitles(team) }}
         </p>
 
         <p>
           <strong>{{ $t('teams.status') }}:</strong>
-          {{ $t(`teams.statuses.${team.status}`) }}
+          {{ team.status || '—' }}
         </p>
 
         <router-link :to="`/teams/${team.id}`" class="view-btn">
@@ -38,36 +55,82 @@
 </template>
 
 <script lang="ts">
+import axios from "axios"
+
 export default {
-  name: "TeamView",
+  name: "TeamsView",
+
   data() {
     return {
-teams: [
-  {
-    id: 1,
-    name: "CodeCrafters",
-    leader: "Anna Smith",
-    members: 4,
-    project: "Smart Task Manager",
-    status: "active"
+      teams: [] as any[],
+      loading: true,
+      errorMessage: ""
+    }
   },
-  {
-    id: 2,
-    name: "TechNova",
-    leader: "John Miller",
-    members: 3,
-    project: "AI Project Matcher",
-    status: "pending"
+
+  mounted() {
+    this.getTeams()
   },
-  {
-    id: 3,
-    name: "NextGen Devs",
-    leader: "Emma Brown",
-    members: 5,
-    project: "Student Collaboration Platform",
-    status: "approved"
-  }
-]
+
+  methods: {
+    async getTeams() {
+      try {
+        this.loading = true
+        this.errorMessage = ""
+
+        const token = localStorage.getItem("token")
+
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/teams",
+          {
+            headers: {
+              Accept: "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            }
+          }
+        )
+
+        if (Array.isArray(response.data)) {
+          this.teams = response.data
+        } else if (Array.isArray(response.data.teams)) {
+          this.teams = response.data.teams
+        } else if (Array.isArray(response.data.data)) {
+          this.teams = response.data.data
+        } else {
+          this.teams = []
+          this.errorMessage = "Teams response has unexpected format."
+        }
+      } catch (error) {
+        console.error("Error loading teams:", error)
+        this.errorMessage = "Could not load teams from backend."
+      } finally {
+        this.loading = false
+      }
+    },
+
+    getLeaderName(team: any) {
+      if (!team.leader) return "—"
+
+      if (typeof team.leader === "string") {
+        return team.leader
+      }
+
+      return (
+        `${team.leader.first_name || ""} ${team.leader.last_name || ""}`.trim() ||
+        team.leader.email ||
+        "—"
+      )
+    },
+
+    getProjectTitles(team: any) {
+      if (team.projects?.length) {
+        return team.projects
+          .map((project: any) => project.title)
+          .filter(Boolean)
+          .join(", ")
+      }
+
+      return "—"
     }
   }
 }
@@ -118,19 +181,39 @@ teams: [
 .team-card p {
   margin: 8px 0;
   color: #444;
+  line-height: 1.5;
 }
 
 .view-btn {
   display: inline-block;
   margin-top: 15px;
   padding: 10px 15px;
-  background-color: #42b983;
-  color: white;
+  background-color: #2563eb;
+  color: white !important;
   border-radius: 8px;
   text-decoration: none;
+  font-weight: 600;
+}
+
+.view-btn:visited {
+  color: white !important;
 }
 
 .view-btn:hover {
-  background-color: #369f6e;
+  background-color: #1d4ed8;
+}
+
+.message {
+  text-align: center;
+  margin-top: 30px;
+  color: #666;
+  font-size: 18px;
+}
+
+.error {
+  text-align: center;
+  margin-top: 30px;
+  color: #dc2626;
+  font-size: 18px;
 }
 </style>

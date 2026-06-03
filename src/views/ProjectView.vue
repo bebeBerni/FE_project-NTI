@@ -1,32 +1,34 @@
 <template>
   <div class="projects-page">
     <div class="page-header">
-     <h1>{{ $t('projects.title') }}</h1>
-<p>{{ $t('projects.description') }}</p>
-</div>
+      <h1>{{ $t('projects.title') }}</h1>
+      <p>{{ $t('projects.description') }}</p>
+    </div>
 
     <div class="projects-grid">
       <div class="project-card" v-for="project in projects" :key="project.id">
         <h2>{{ project.title }}</h2>
-<p>
-  <strong>{{ $t('projects.type') }}:</strong>
-  {{ $t(`projects.types.${project.type}`) }}
-</p>
 
-<p>
-  <strong>{{ $t('projects.company') }}:</strong>{{ project.company }}
-</p>
+        <p>
+        <strong>{{ $t('projects.type') }}:</strong>
+          {{ project.type }}
+        </p>
 
-<p>
-  <strong>{{ $t('projects.budget') }}:</strong>
-  {{ project.budget }}
-</p>
+        <p>
+        <strong>{{ $t('projects.company') }}:</strong>
+          {{ project.company?.company_name || '—' }}
+        </p>
 
-<p>
-  <strong>{{ $t('projects.status') }}:</strong>
-  {{ $t(`projects.statuses.${project.status}`) }}
-</p>
-        <button class="view-btn">{{ $t('projects.viewDetails') }}</button>
+        <p>
+        <strong>{{ $t('projects.budget') }}:</strong>
+          €{{ project.budget }}
+        </p>
+
+        <p>
+        <strong>{{ $t('projects.status') }}:</strong>
+          {{ project.status }}
+        </p>
+        
         <router-link :to="`/projects/${project.id}`" class="view-btn">
           {{ $t('projects.viewDetails') }}
         </router-link>
@@ -36,36 +38,37 @@
 </template>
 
 <script lang="ts">
+import axios from "axios"
+
 export default {
   name: "ProjectsView",
+
   data() {
     return {
-   projects: [
-  {
-    id: 1,
-    title: "AI Task Manager",
-    type: "company",
-    company: "TechCorp",
-    budget: "€2000",
-    status: "open"
+      projects: [] as any[]
+    }
   },
-  {
-    id: 2,
-    title: "Student Collaboration Platform",
-    type: "student",
-    company: "—",
-    budget: "€0",
-    status: "progress"
+
+  mounted() {
+    this.getProjects()
   },
-  {
-    id: 3,
-    title: "E-commerce Recommendation System",
-    type: "company",
-    company: "ShopSmart",
-    budget: "€3500",
-    status: "open"
-  }
-]
+
+  methods: {
+    async getProjects() {
+      try {
+        const token = localStorage.getItem("token")
+
+        const response = await axios.get("http://127.0.0.1:8000/api/projects", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json"
+          }
+        })
+
+        this.projects = response.data.projects || response.data
+      } catch (error) {
+        console.error("Error loading projects:", error)
+      }
     }
   }
 }

@@ -3,16 +3,47 @@
     <div class="project-detail-card">
       <h1>{{ project.title }}</h1>
 
-      <p><strong>Type:</strong> {{ project.type }}</p>
-      <p><strong>Company:</strong> {{ project.company }}</p>
-      <p><strong>Budget:</strong> {{ project.budget }}</p>
-      <p><strong>Status:</strong> {{ project.status }}</p>
-      <p><strong>Description:</strong> {{ project.description }}</p>
+      <p><strong>Type:</strong> {{ project.type || '—' }}</p>
+
+      <p>
+        <strong>Company:</strong>
+        {{ project.company?.company_name || '—' }}
+      </p>
+
+      <p>
+        <strong>ICO:</strong>
+        {{ project.company?.ico || '—' }}
+      </p>
+
+      <p>
+        <strong>Company website:</strong>
+        <a
+          v-if="project.company?.website"
+          :href="project.company.website"
+          target="_blank"
+        >
+          {{ project.company.website }}
+        </a>
+        <span v-else>—</span>
+      </p>
+
+      <p>
+        <strong>Company address:</strong>
+        {{ project.company?.address || '—' }}
+      </p>
+
+      <p><strong>Budget:</strong> €{{ project.budget || '0' }}</p>
+      <p><strong>Status:</strong> {{ project.status || '—' }}</p>
+      <p><strong>Description:</strong> {{ project.description || '—' }}</p>
 
       <router-link to="/projects" class="back-btn">
         Back to Projects
       </router-link>
     </div>
+  </div>
+
+  <div v-else-if="loading" class="not-found">
+    <h1>Loading project...</h1>
   </div>
 
   <div v-else class="not-found">
@@ -24,12 +55,25 @@
 </template>
 
 <script lang="ts">
+import axios from "axios"
+
+type Company = {
+  id: number
+  company_name: string
+  ico: string
+  description: string
+  website: string
+  address: string
+  created_at: string
+  updated_at: string
+}
+
 type Project = {
   id: number
   title: string
   type: string
-  company: string
-  budget: string
+  company: Company | null
+  budget: string | number
   status: string
   description: string
 }
@@ -38,49 +82,40 @@ export default {
   name: "ProjectDetailView",
 
   data() {
-    const projects: Project[] = [
-      {
-        id: 1,
-        title: "AI Task Manager",
-        type: "Company Project",
-        company: "TechCorp",
-        budget: "€2000",
-        status: "Open",
-        description: "A smart system for managing tasks using artificial intelligence."
-      },
-      {
-        id: 2,
-        title: "Student Collaboration Platform",
-        type: "Student Idea",
-        company: "—",
-        budget: "€0",
-        status: "In Progress",
-        description:
-          "A platform where students can collaborate on projects, share files, and communicate."
-      },
-      {
-        id: 3,
-        title: "E-commerce Recommendation System",
-        type: "Company Project",
-        company: "ShopSmart",
-        budget: "€3500",
-        status: "Open",
-        description:
-          "A recommendation engine for online stores based on customer behavior."
-      }
-    ]
-
     return {
-      projects,
-      project: null as Project | null
+      project: null as Project | null,
+      loading: true
     }
   },
 
-  created() {
-    const projectId = Number(this.$route.params.id)
+  mounted() {
+    this.getProject()
+  },
 
-    this.project =
-      this.projects.find((p: Project) => p.id === projectId) || null
+  methods: {
+    async getProject() {
+      try {
+        const projectId = this.$route.params.id
+        const token = localStorage.getItem("token")
+
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/projects/${projectId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json"
+            }
+          }
+        )
+
+        this.project = response.data.project || response.data
+      } catch (error) {
+        console.error("Error loading project:", error)
+        this.project = null
+      } finally {
+        this.loading = false
+      }
+    }
   }
 }
 </script>
@@ -111,18 +146,25 @@ export default {
   color: #444;
 }
 
+.project-detail-card a {
+  color: #42b983;
+  word-break: break-all;
+}
+
 .back-btn {
   display: inline-block;
   margin-top: 20px;
-  padding: 10px 16px;
-  background-color: #42b983;
-  color: white;
+  padding: 12px 20px;
+  background: #2c3e50;
+  color: #ffffff;
   text-decoration: none;
   border-radius: 8px;
+  font-weight: 600;
+  transition: 0.3s;
 }
 
 .back-btn:hover {
-  background-color: #369f6e;
+  background: #1a252f;
 }
 
 .not-found {
