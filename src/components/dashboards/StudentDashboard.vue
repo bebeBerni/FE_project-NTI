@@ -110,10 +110,7 @@
           {{ member.last_name || member.user?.last_name }}
         </h3>
 
-        <p>
-          Email:
-          {{ member.email || member.user?.email }}
-        </p>
+        <p>Email: {{ member.email || member.user?.email }}</p>
 
         <p>
           Role in team:
@@ -168,7 +165,6 @@
 import api from '@/api/axios'
 import axios from 'axios'
 
-
 interface Team {
   id: number
   name: string
@@ -202,7 +198,6 @@ interface Project {
 
 interface TeamMember {
   id: number
-
   first_name?: string
   last_name?: string
   email?: string
@@ -229,21 +224,21 @@ export default {
     },
   },
 
-data(): {
-  myTeam: Team | null
-  teamMembers: TeamMember[]
-  myProject: Project | null
-  availableProjects: Project[]
-  availableTeams: Team[]
-} {
-  return {
-    myTeam: null,
-    teamMembers: [],
-    myProject: null,
-    availableProjects: [],
-    availableTeams: [],
-  }
-},
+  data(): {
+    myTeam: Team | null
+    teamMembers: TeamMember[]
+    myProject: Project | null
+    availableProjects: Project[]
+    availableTeams: Team[]
+  } {
+    return {
+      myTeam: null,
+      teamMembers: [],
+      myProject: null,
+      availableProjects: [],
+      availableTeams: [],
+    }
+  },
 
   mounted() {
     this.loadDashboard()
@@ -261,26 +256,19 @@ data(): {
           response.data.project || response.data.my_project || null
 
         if (!this.myProject) {
-          this.loadAvailableProjects()
+          await this.loadAvailableProjects()
         }
 
         if (!this.myTeam) {
-          this.loadAvailableTeams()
+          await this.loadAvailableTeams()
         }
       } catch (error: unknown) {
-  if (axios.isAxiosError(error)) {
-    console.log(error.response?.status)
-    console.log(error.response?.data)
-
-    alert(
-      error.response?.data?.message ??
-      'Failed to load dashboard.'
-    )
-  } else {
-    console.error(error)
-    alert('Unexpected error occurred.')
-  }
-}
+        if (axios.isAxiosError(error)) {
+          alert(error.response?.data?.message || 'Failed to load dashboard.')
+        } else {
+          alert('Unexpected error occurred.')
+        }
+      }
     },
 
     async loadAvailableProjects() {
@@ -288,8 +276,11 @@ data(): {
         const response = await api.get('/student/available-projects')
         this.availableProjects = response.data.projects || response.data
       } catch (error: unknown) {
-        console.error(error)
-        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to load available projects.')
+        if (axios.isAxiosError(error)) {
+          alert(error.response?.data?.message || 'Failed to load available projects.')
+        } else {
+          alert('Unexpected error occurred.')
+        }
       }
     },
 
@@ -298,36 +289,47 @@ data(): {
         const response = await api.get('/student/available-teams')
         this.availableTeams = response.data.teams || response.data
       } catch (error: unknown) {
-        console.error(error)
-        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to load available teams.')
+        if (axios.isAxiosError(error)) {
+          alert(error.response?.data?.message || 'Failed to load available teams.')
+        } else {
+          alert('Unexpected error occurred.')
+        }
       }
     },
 
-    async joinProject(projectId : number) {
-      try {
-        await api.post(`/student/projects/${projectId}/join`)
+    joinProject(projectId: number) {
+      const accept = confirm(
+        'To join this project, you must upload your CV first. Do you want to continue?'
+      )
 
-        alert('You joined the project.')
-
-        this.availableProjects = []
-        this.loadDashboard()
-      } catch (error: unknown) {
-        console.error(error)
-        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to join project.')
+      if (!accept) {
+        return
       }
+
+      this.$router.push(`/student/projects/${projectId}/upload-cv`)
     },
 
-    async joinTeam(teamId : number) {
+    async joinTeam(teamId: number) {
+      const accept = confirm('Do you want to join this team?')
+
+      if (!accept) {
+        alert('You declined joining the team.')
+        return
+      }
+
       try {
         await api.post(`/student/teams/${teamId}/join`)
 
         alert('You joined the team.')
 
         this.availableTeams = []
-        this.loadDashboard()
+        await this.loadDashboard()
       } catch (error: unknown) {
-        console.error(error)
-        alert((error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to join team.')
+        if (axios.isAxiosError(error)) {
+          alert(error.response?.data?.message || 'Failed to join team.')
+        } else {
+          alert('Unexpected error occurred.')
+        }
       }
     },
 
@@ -339,11 +341,11 @@ data(): {
       this.$router.push('/student/teams/create')
     },
 
-    formatDate(date : string) {
+    formatDate(date: string) {
       return new Date(date).toLocaleDateString()
     },
 
-    formatStatus(status ?: string) {
+    formatStatus(status?: string) {
       if (!status) return 'No status'
 
       const statuses: Record<string, string> = {
@@ -363,7 +365,7 @@ data(): {
       return statuses[status] || status
     },
 
-    getStatusClass(status ?: string) {
+    getStatusClass(status?: string) {
       const classes: Record<string, string> = {
         draft: 'status-gray',
         open: 'status-green',

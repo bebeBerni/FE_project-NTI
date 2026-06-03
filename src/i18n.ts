@@ -11,6 +11,7 @@ const messages = {
   challenges: "Challenges and Deadlines",
   news: "News",
   contact: "Contact",
+  dashboard: "Dashboard",
   login: "Login",
   register: "Register"
 },
@@ -248,6 +249,7 @@ const messages = {
     challenges: "Výzvy a termíny",
     news: "Novinky",
     contact: "Kontakt",
+    dashboard: "Nástenka",
     login: "Prihlásenie",
     register: "Registrácia"
   },
