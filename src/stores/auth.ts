@@ -19,7 +19,7 @@ type AuthState = {
   loading: boolean
   error: string | null
 }
-//STUDENT
+
 type RegisterStudentData = {
   first_name: string
   last_name: string
@@ -32,16 +32,7 @@ type RegisterStudentData = {
   study_program: string
   year_of_study: number
 }
-//ADMIN
-type RegisterAdminData = {
-  first_name: string
-  last_name: string
-  email: string
-  password: string
-  password_confirmation: string
-  phone: string
-}
-//MENTOR
+
 type RegisterMentorData = {
   first_name: string
   last_name: string
@@ -52,7 +43,7 @@ type RegisterMentorData = {
   specialization: string
   bio: string
 }
-//COMPANY
+
 type RegisterCompanyData = {
   first_name: string
   last_name: string
@@ -94,157 +85,96 @@ export const useAuthStore = defineStore('auth', {
 
         await this.fetchUser()
 
+        return response.data
       } catch (error: unknown) {
-        if (error instanceof Error) {
-          this.error = error.message
-        } else {
-          this.error = 'Login failed'
-        }
+        this.error = error instanceof Error ? error.message : 'Login failed'
         throw error
       } finally {
         this.loading = false
       }
     },
-// lOGOUT
-//delete :Pinia state,localStorage tokent,axios Bearer tokent,+ after refresh user not be logged in
+
     async logout() {
-  try {
-    await api.post('/logout')
-  } catch (error) {
-    console.error('Logout failed', error)
-  } finally {
-    this.token = null
-    this.user = null
+      try {
+        await api.post('/logout')
+      } catch (error) {
+        console.error('Logout failed', error)
+      } finally {
+        this.token = null
+        this.user = null
 
-    delete api.defaults.headers.common['Authorization']
-    localStorage.removeItem('token')
+        delete api.defaults.headers.common['Authorization']
+        localStorage.removeItem('token')
 
-    router.push('/')
-  }
-},
-//REGISTER
+        router.push('/')
+      }
+    },
 
-  //STUDENT
-async register_student(data: RegisterStudentData) {
-  this.loading = true
-  this.error = null
+    async register_student(data: RegisterStudentData) {
+      this.loading = true
+      this.error = null
 
-  try {
-    const response = await api.post(
-      '/register/student',
-      data
-    )
+      try {
+        const response = await api.post('/register/student', data)
+        return response.data
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error ? error.message : 'Student registration failed'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
 
-    return response.data
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      this.error = error.message
-    } else {
-      this.error = 'Student registration failed'
-    }
+    async register_mentor(data: RegisterMentorData) {
+      this.loading = true
+      this.error = null
 
-    throw error
-  } finally {
-    this.loading = false
-  }
-},
+      try {
+        const response = await api.post('/register/mentor', data)
+        return response.data
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error ? error.message : 'Mentor registration failed'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
 
-//ADMIN
-async register_admin(data: RegisterAdminData) {
-  this.loading = true
-  this.error = null
+    async register_company(data: RegisterCompanyData) {
+      this.loading = true
+      this.error = null
 
-  try {
-    const response = await api.post(
-      '/register',
-      data
-    )
+      try {
+        const response = await api.post('/register/company', data)
+        return response.data
+      } catch (error: unknown) {
+        this.error =
+          error instanceof Error ? error.message : 'Company registration failed'
+        throw error
+      } finally {
+        this.loading = false
+      }
+    },
 
-    return response.data
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      this.error = error.message
-    } else {
-      this.error = 'Admin registration failed'
-    }
+    async fetchUser() {
+      if (!this.token) return
 
-    throw error
-  } finally {
-    this.loading = false
-  }
-},
+      api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
 
-//MENTOR
-async register_mentor(data: RegisterMentorData) {
-  this.loading = true
-  this.error = null
+      try {
+        const response = await api.get('/me')
+        this.user = response.data.user
+      } catch (error) {
+        console.log('ME ERROR:', error)
 
-  try {
-    const response = await api.post(
-      '/register/mentor',
-      data
-    )
+        this.token = null
+        this.user = null
 
-    return response.data
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      this.error = error.message
-    } else {
-      this.error = 'Mentor registration failed'
-    }
-
-    throw error
-  } finally {
-    this.loading = false
-  }
-},
-
-//COMPANY
-async register_company(data: RegisterCompanyData) {
-  this.loading = true
-  this.error = null
-
-  try {
-    const response = await api.post(
-      '/register/company',
-      data
-    )
-    return response.data
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      this.error = error.message
-    } else {
-      this.error = 'Company registration failed'
-    }
-    throw error
-  } finally {
-    this.loading = false
-  }
-},
-async fetchUser() {
-  console.log('FETCH USER CALLED')
-
-  if (!this.token) {
-    console.log('NO TOKEN IN STORE')
-    return
-  }
-
-  api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-
-  try {
-    const response = await api.get('/me')
-
-    console.log('ME RESPONSE:', response.data)
-
-    this.user = response.data.user
-
-    console.log('USER SET:', this.user)
-    console.log('USER ROLE:', this.user?.roles?.[0]?.name)
-
-  } catch (error) {
-    console.log('ME ERROR:', error)
-    await this.logout()
-  }
-}
-},
+        delete api.defaults.headers.common['Authorization']
+        localStorage.removeItem('token')
+      }
+    },
+  },
 })

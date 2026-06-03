@@ -1,17 +1,16 @@
 <template>
   <p v-if="errors.general" class="error">
-  {{ errors.general }}
-</p>
+    {{ errors.general }}
+  </p>
+
   <div class="auth-page">
     <h1>Register</h1>
 
-    <!-- ROLE -->
     <select v-model="form.role" :class="{ 'error-border': errors.role }">
       <option disabled value="">Select role</option>
       <option value="student">Student</option>
       <option value="company">Company</option>
       <option value="mentor">Mentor</option>
-      <option value="admin">Admin</option>
     </select>
 
     <p v-if="errors.role" class="error">{{ errors.role }}</p>
@@ -21,53 +20,63 @@
     </p>
 
     <form v-if="form.role" class="auth-form" @submit.prevent="submitForm">
-
-      <!-- NAME (all roles) -->
-      <div v-if="form.role" class="name-row">
+      <div class="name-row">
         <input v-model="form.name" type="text" placeholder="First Name" />
         <input v-model="form.surname" type="text" placeholder="Last Name" />
       </div>
 
-      <!-- COMMON -->
       <input v-model="form.email" type="email" placeholder="Email" />
       <p v-if="errors.email" class="error">{{ errors.email }}</p>
 
       <input v-model="form.phone" type="text" placeholder="Phone" />
 
       <input v-model="form.password" type="password" placeholder="Password" />
-      <input v-model="form.password_confirmation" type="password" placeholder="Confirm Password" />
+      <input
+        v-model="form.password_confirmation"
+        type="password"
+        placeholder="Confirm Password"
+      />
 
       <p v-if="errors.password" class="error">{{ errors.password }}</p>
       <p v-if="errors.password_confirmation" class="error">
         {{ errors.password_confirmation }}
       </p>
 
-      <!-- STUDENT -->
       <div v-if="form.role === 'student'">
         <input v-model="form.faculty" type="text" placeholder="Faculty" />
         <input v-model="form.department" type="text" placeholder="Department" />
-        <input v-model="form.study_program" type="text" placeholder="Study Program" />
-        <input v-model.number="form.year_of_study" type="number" min="1" placeholder="Year of Study" />
+        <input
+          v-model="form.study_program"
+          type="text"
+          placeholder="Study Program"
+        />
+        <input
+          v-model.number="form.year_of_study"
+          type="number"
+          min="1"
+          placeholder="Year of Study"
+        />
       </div>
 
-      <!-- MENTOR -->
       <div v-if="form.role === 'mentor'">
-        <input v-model="form.specialization" type="text" placeholder="Specialization" />
+        <input
+          v-model="form.specialization"
+          type="text"
+          placeholder="Specialization"
+        />
         <textarea v-model="form.bio" placeholder="Bio"></textarea>
       </div>
 
-      <!-- COMPANY -->
       <div v-if="form.role === 'company'">
-        <input v-model="form.company_name" type="text" placeholder="Company Name" />
+        <input
+          v-model="form.company_name"
+          type="text"
+          placeholder="Company Name"
+        />
         <input v-model="form.ico" type="text" placeholder="ICO" />
         <input v-model="form.website" type="text" placeholder="Website" />
         <input v-model="form.address" type="text" placeholder="Address" />
         <textarea v-model="form.description" placeholder="Description"></textarea>
-      </div>
-
-      <!-- ADMIN (only basic fields, no extras) -->
-      <div v-if="form.role === 'admin'">
-        <p class="info">Admin registration uses only basic info.</p>
       </div>
 
       <button type="submit">Register</button>
@@ -84,27 +93,22 @@
 import axios from "axios"
 import { useAuthStore } from "@/stores/auth"
 
-type Role = "" | "student" | "company" | "mentor" | "admin"
+type Role = "" | "student" | "company" | "mentor"
 
 type Form = {
   role: Role
-
   name: string
   surname: string
-
   email: string
   phone: string
   password: string
   password_confirmation: string
-
   faculty: string
   department: string
   study_program: string
   year_of_study: number
-
   specialization: string
   bio: string
-
   company_name: string
   ico: string
   description: string
@@ -120,23 +124,20 @@ type Errors = {
   phone?: string
   first_name?: string
   last_name?: string
-
   faculty?: string
   department?: string
   study_program?: string
   year_of_study?: string
-
   company_name?: string
   ico?: string
   description?: string
   website?: string
   address?: string
-
   specialization?: string
   bio?: string
-
   general?: string
 }
+
 export default {
   name: "RegisterView",
 
@@ -144,23 +145,18 @@ export default {
     return {
       form: {
         role: "",
-
         name: "",
         surname: "",
-
         email: "",
         phone: "",
         password: "",
         password_confirmation: "",
-
         faculty: "",
         department: "",
         study_program: "",
         year_of_study: 1,
-
         specialization: "",
         bio: "",
-
         company_name: "",
         ico: "",
         description: "",
@@ -183,20 +179,19 @@ export default {
     resetRoleFields() {
       this.form.name = ""
       this.form.surname = ""
-
       this.form.faculty = ""
       this.form.department = ""
       this.form.study_program = ""
       this.form.year_of_study = 1
-
       this.form.specialization = ""
       this.form.bio = ""
-
       this.form.company_name = ""
       this.form.ico = ""
       this.form.description = ""
       this.form.website = ""
       this.form.address = ""
+      this.errors = {}
+      this.successMessage = ""
     },
 
     validate(): boolean {
@@ -206,7 +201,21 @@ export default {
         this.errors.role = "Please select a role"
       }
 
-      if (this.form.password.length < 6) {
+      if (!this.form.name) {
+        this.errors.first_name = "First name is required"
+      }
+
+      if (!this.form.surname) {
+        this.errors.last_name = "Last name is required"
+      }
+
+      if (!this.form.email) {
+        this.errors.email = "Email is required"
+      }
+
+      if (!this.form.password) {
+        this.errors.password = "Password is required"
+      } else if (this.form.password.length < 6) {
         this.errors.password = "Password must be at least 6 characters"
       }
 
@@ -264,17 +273,6 @@ export default {
             address: this.form.address
           })
           break
-
-        case "admin":
-          await authStore.register_admin({
-            first_name: this.form.name,
-            last_name: this.form.surname,
-            email: this.form.email,
-            password: this.form.password,
-            password_confirmation: this.form.password_confirmation,
-            phone: this.form.phone
-          })
-          break
       }
     },
 
@@ -286,90 +284,68 @@ export default {
       }, 2000)
     },
 
-   handleApiError(error: unknown) {
-  if (!axios.isAxiosError(error)) {
-    this.errors.general = "Unexpected error occurred"
-    return
-  }
+    handleApiError(error: unknown) {
+      if (!axios.isAxiosError(error)) {
+        this.errors.general = "Unexpected error occurred"
+        return
+      }
 
-  const status = error.response?.status
-  const data = error.response?.data
+      const status = error.response?.status
+      const data = error.response?.data
 
-  //  backend message 404, 500
-  if (data?.message) {
-    this.errors.general = data.message
-  }
+      if (data?.message) {
+        this.errors.general = data.message
+      }
 
-  //  validation errors
-  if (data && typeof data === "object") {
-    for (const key in data) {
-      const field = data[key]
+      if (data?.errors && typeof data.errors === "object") {
+        for (const key in data.errors) {
+          const field = data.errors[key]
 
-      if (Array.isArray(field)) {
-        this.errors[key as keyof Errors] = field[0]
+          if (Array.isArray(field)) {
+            this.errors[key as keyof Errors] = field[0]
+          }
+        }
+      }
+
+      if (!data?.message) {
+        switch (status) {
+          case 404:
+            this.errors.general =
+              "Endpoint not found. Check your Laravel route and axios baseURL."
+            break
+          case 500:
+            this.errors.general = "Server error"
+            break
+          case 401:
+            this.errors.general = "Unauthorized"
+            break
+          case 422:
+            this.errors.general = "Validation failed"
+            break
+          default:
+            this.errors.general = "Request failed"
+        }
+      }
+    },
+
+    async submitForm() {
+      if (!this.validate()) return
+
+      this.errors = {}
+      this.successMessage = ""
+
+      try {
+        await this.registerByRole()
+        this.handleSuccess()
+      } catch (error) {
+        this.handleApiError(error)
       }
     }
   }
-
-  //   ERROR CODES
-  if (!data?.message) {
-    switch (status) {
-      case 404:
-        this.errors.general = "Endpoint not found (404)"
-        break
-      case 500:
-        this.errors.general = "Server error (500)"
-        break
-      case 401:
-        this.errors.general = "Unauthorized"
-        break
-      default:
-        this.errors.general = "Request failed"
-    }
-  }
-},
-
-async submitForm() {
-   console.log("ROLE BEFORE SUBMIT:", this.form.role)
-  if (!this.validate()) return
-
-  this.errors = {} as Errors
-  this.successMessage = ""
-
-//DEBUG: log form data
-console.log("🔥 FINAL FRONTEND PAYLOAD:", {
-    role: this.form.role,
-    name: this.form.name,
-    surname: this.form.surname,
-    email: this.form.email,
-    phone: this.form.phone,
-    faculty: this.form.faculty,
-    department: this.form.department,
-    study_program: this.form.study_program,
-    year_of_study: this.form.year_of_study,
-    specialization: this.form.specialization,
-    bio: this.form.bio,
-    company_name: this.form.company_name,
-    ico: this.form.ico,
-    website: this.form.website,
-    address: this.form.address,
-    description: this.form.description,
-  })
-
-
-
-  try {
-    await this.registerByRole()
-    this.handleSuccess()
-  } catch (error) {
-    this.handleApiError(error)
-  }
-}
-  }
 }
 </script>
-<style scoped>
 
+<style scoped>
 select.error-border {
   border-color: red;
 }
@@ -386,7 +362,6 @@ select.error-border {
   gap: 16px;
 }
 
-/* NAME row */
 .name-row {
   display: flex;
   gap: 12px;
@@ -396,9 +371,9 @@ select.error-border {
   width: 100%;
 }
 
-/* INPUTS */
 input,
-select {
+select,
+textarea {
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -407,14 +382,18 @@ select {
   font-size: 14px;
 }
 
-/* FOCUS */
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: none;
   border-color: #42b983;
 }
 
-/* BUTTON */
 button {
   padding: 12px;
   background-color: #42b983;
@@ -430,7 +409,6 @@ button:hover {
   background-color: #369f6e;
 }
 
-/* ERROR */
 .error {
   color: red;
   font-size: 13px;
@@ -438,7 +416,12 @@ button:hover {
   margin-top: -8px;
 }
 
-/* LOGIN LINK */
+.success {
+  color: green;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
 .auth-switch {
   margin-top: 20px;
   color: #555;
@@ -452,10 +435,5 @@ button:hover {
 
 .auth-switch a:hover {
   text-decoration: underline;
-}
-.success {
-  color: green;
-  font-weight: 600;
-  margin: 10px 0;
 }
 </style>
