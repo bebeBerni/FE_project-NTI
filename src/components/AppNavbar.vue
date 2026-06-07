@@ -4,7 +4,10 @@
 
       <!-- LOGO -->
       <div class="logo">
-        <router-link to="/">MyProject</router-link>
+      <router-link to="/">
+  <img src="@/assets/logonew1.png" alt="NTI Logo" class="logo-img">
+  <span>NTI</span>
+</router-link>
       </div>
 
       <!-- NAV LINKS -->
@@ -86,6 +89,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.logo-img {
+  height: 45px;
+}
+
+.logo a {
+  display: inline-flex;
+  align-items: center;
+
+}
+
+
 .navbar {
   background-color: #2c3e50;
   padding: 15px 30px;
@@ -154,6 +168,7 @@ onMounted(() => {
   color: white;
 }
 
+
 /* REGISTER (filled) */
 .register-btn {
   padding: 8px 14px;
@@ -186,4 +201,11 @@ onMounted(() => {
 .logout-btn:hover {
   background-color: #c0392b;
 }
+
+.nav-links a.router-link-exact-active {
+  color: #52eda7;
+  border-bottom: 3px solid #42b983;
+  padding-bottom: 4px;
+}
+
 </style>
