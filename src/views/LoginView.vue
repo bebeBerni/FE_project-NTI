@@ -12,6 +12,12 @@
 
       <p v-if="auth.error" class="error">{{ auth.error }}</p>
     </form>
+
+    <p class="auth-switch">
+      <router-link to="/forgot-password">
+        Forgot password?
+      </router-link>
+    </p>
   </div>
 </template>
 
@@ -40,8 +46,6 @@ const handleLogin = async () => {
   }
 }
 </script>
-
-
 
 <style scoped>
 .auth-page {
@@ -75,6 +79,11 @@ button:hover {
   background-color: #369f6e;
 }
 
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .error {
   color: red;
   margin-top: 10px;
@@ -83,5 +92,15 @@ button:hover {
 .auth-switch {
   margin-top: 20px;
   color: #555;
+}
+
+.auth-switch a {
+  color: #42b983;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-switch a:hover {
+  text-decoration: underline;
 }
 </style>

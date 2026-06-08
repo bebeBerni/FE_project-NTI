@@ -153,7 +153,7 @@
       >
         <h3>{{ team.name }}</h3>
 
-        <button @click="joinTeam(team.id)">
+        <button @click="joinTeam(team)">
           Join Team
         </button>
       </div>
@@ -171,6 +171,11 @@ interface Team {
   description?: string
   created_at?: string
   my_role?: string
+
+  project?: {
+    id: number
+    title: string
+  } | null
 
   pivot?: {
     member_role?: string
@@ -309,29 +314,47 @@ export default {
       this.$router.push(`/student/projects/${projectId}/upload-cv`)
     },
 
-    async joinTeam(teamId: number) {
-      const accept = confirm('Do you want to join this team?')
+    joinTeam(team: Team) {
+  if (team.project) {
+    const accept = confirm(
+      `This team already has a project: "${team.project.title}". To join this team, you must upload your CV first. Do you want to continue?`
+    )
 
-      if (!accept) {
-        alert('You declined joining the team.')
-        return
-      }
+    if (!accept) {
+      alert('You declined joining the team.')
+      return
+    }
 
-      try {
-        await api.post(`/student/teams/${teamId}/join`)
+    this.$router.push(`/student/teams/${team.id}/projects/${team.project.id}/upload-cv`)
+    return
+  }
 
-        alert('You joined the team.')
+  this.joinTeamWithoutCv(team.id)
+},
 
-        this.availableTeams = []
-        await this.loadDashboard()
-      } catch (error: unknown) {
-        if (axios.isAxiosError(error)) {
-          alert(error.response?.data?.message || 'Failed to join team.')
-        } else {
-          alert('Unexpected error occurred.')
-        }
-      }
-    },
+async joinTeamWithoutCv(teamId: number) {
+  const accept = confirm('Do you want to join this team?')
+
+  if (!accept) {
+    alert('You declined joining the team.')
+    return
+  }
+
+  try {
+    await api.post(`/student/teams/${teamId}/join`)
+
+    alert('You joined the team.')
+
+    this.availableTeams = []
+    await this.loadDashboard()
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message || 'Failed to join team.')
+    } else {
+      alert('Unexpected error occurred.')
+    }
+  }
+},
 
     createProject() {
       this.$router.push('/student/projects/create')
