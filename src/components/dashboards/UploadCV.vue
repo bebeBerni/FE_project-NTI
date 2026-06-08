@@ -9,13 +9,26 @@
     <form @submit.prevent="submitCv">
       <div class="form-group">
         <label>CV file</label>
+
         <input
           type="file"
-          accept=".pdf,.doc,.docx"
+          accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
           @change="handleFileChange"
           required
         />
+
+        <p v-if="cvFile" class="file-name">
+          Selected file: {{ cvFile.name }}
+        </p>
       </div>
+
+      <p v-if="errorMessage" class="error">
+        {{ errorMessage }}
+      </p>
+
+      <p v-if="successMessage" class="success">
+        {{ successMessage }}
+      </p>
 
       <button type="submit" :disabled="loading">
         {{ loading ? 'Uploading...' : 'Upload CV and Join Project' }}
@@ -35,53 +48,84 @@ export default {
     return {
       cvFile: null as File | null,
       loading: false,
+      errorMessage: '',
+      successMessage: '',
     }
   },
 
   methods: {
     handleFileChange(event: Event) {
       const input = event.target as HTMLInputElement
-      this.cvFile = input.files?.[0] || null
+      const file = input.files?.[0] || null
+
+      this.errorMessage = ''
+      this.successMessage = ''
+
+      if (!file) {
+        this.cvFile = null
+        return
+      }
+
+      const allowedExtensions = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']
+      const extension = file.name.split('.').pop()?.toLowerCase()
+
+      if (!extension || !allowedExtensions.includes(extension)) {
+        this.cvFile = null
+        input.value = ''
+        this.errorMessage = 'Allowed files are PDF, DOC, DOCX, JPG, JPEG and PNG.'
+        return
+      }
+
+      this.cvFile = file
     },
 
     async submitCv() {
-  if (!this.cvFile) {
-    alert('Please upload your CV.')
-    return
-  }
+      if (!this.cvFile) {
+        this.errorMessage = 'Please upload your CV.'
+        return
+      }
 
-  const projectApplicationId = this.$route.params.projectApplicationId
+      const projectApplicationId = this.$route.params.projectApplicationId
 
-  const formData = new FormData()
-  formData.append('project_application_id', String(projectApplicationId))
-  formData.append('type', 'cv')
-  formData.append('file', this.cvFile)
+      if (!projectApplicationId) {
+        this.errorMessage = 'Project application ID is missing.'
+        return
+      }
 
-  this.loading = true
+      const formData = new FormData()
+      formData.append('project_application_id', String(projectApplicationId))
+      formData.append('type', 'cv')
+      formData.append('file', this.cvFile)
 
-  try {
-    await api.post('/documents', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+      this.loading = true
+      this.errorMessage = ''
+      this.successMessage = ''
 
-    alert('CV uploaded successfully.')
+      try {
+        await api.post('/documents', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
 
-    this.$router.push('/student/dashboard')
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      alert(
-        error.response?.data?.message ||
-        'Failed to upload CV.'
-      )
-    } else {
-      alert('Unexpected error occurred.')
-    }
-  } finally {
-    this.loading = false
-  }
-  },
+        localStorage.setItem('cv_uploaded', 'yes')
+
+        this.successMessage = 'CV uploaded successfully.'
+
+        setTimeout(() => {
+          this.$router.push('/dashboard')
+        }, 800)
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          this.errorMessage =
+            error.response?.data?.message || 'Failed to upload CV.'
+        } else {
+          this.errorMessage = 'Unexpected error occurred.'
+        }
+      } finally {
+        this.loading = false
+      }
+    },
   },
 }
 </script>
@@ -115,8 +159,29 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background: #369f6e;
+}
+
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.file-name {
+  margin-top: 10px;
+  color: #555;
+}
+
+.success {
+  color: #27ae60;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.error {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-bottom: 15px;
 }
 </style>

@@ -2,6 +2,13 @@
   <div class="student-dashboard">
     <h1>Student Dashboard</h1>
 
+    <div
+  v-if="cvUploaded"
+  class="success-message"
+>
+  ✅ Your CV has been uploaded successfully.
+</div>
+
     <section class="cards">
       <div v-if="!myProject" class="card">
         <h3>Available Projects</h3>
@@ -230,24 +237,27 @@ export default {
   },
 
   data(): {
-    myTeam: Team | null
-    teamMembers: TeamMember[]
-    myProject: Project | null
-    availableProjects: Project[]
-    availableTeams: Team[]
-  } {
-    return {
-      myTeam: null,
-      teamMembers: [],
-      myProject: null,
-      availableProjects: [],
-      availableTeams: [],
-    }
-  },
+  myTeam: Team | null
+  teamMembers: TeamMember[]
+  myProject: Project | null
+  availableProjects: Project[]
+  availableTeams: Team[]
+  cvUploaded: boolean
+} {
+  return {
+    myTeam: null,
+    teamMembers: [],
+    myProject: null,
+    availableProjects: [],
+    availableTeams: [],
+    cvUploaded: false,
+  }
+},
 
-  mounted() {
-    this.loadDashboard()
-  },
+ mounted() {
+  this.cvUploaded = localStorage.getItem('cv_uploaded') === 'yes'
+  this.loadDashboard()
+},
 
   methods: {
     async loadDashboard() {
@@ -302,17 +312,38 @@ export default {
       }
     },
 
-    joinProject(projectId: number) {
-      const accept = confirm(
-        'To join this project, you must upload your CV first. Do you want to continue?'
-      )
+    async joinProject(projectId: number) {
+  const accept = confirm(
+    'To join this project, you must upload your CV first. Do you want to continue?'
+  )
 
-      if (!accept) {
-        return
-      }
+  if (!accept) {
+    return
+  }
 
-      this.$router.push(`/student/projects/${projectId}/upload-cv`)
-    },
+  try {
+    const response = await api.post(`/student/projects/${projectId}/join`)
+
+    const projectApplicationId =
+      response.data.project_application_id ||
+      response.data.project_application?.id
+
+    if (!projectApplicationId) {
+      alert('Project application ID was not returned.')
+      return
+    }
+
+    this.$router.push(
+      `/student/project-applications/${projectApplicationId}/upload-cv`
+    )
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message || 'Failed to join project.')
+    } else {
+      alert('Unexpected error occurred.')
+    }
+  }
+},
 
     joinTeam(team: Team) {
   if (team.project) {
@@ -410,6 +441,17 @@ async joinTeamWithoutCv(teamId: number) {
 </script>
 
 <style scoped>
+
+.success-message {
+  background: #d5f5e3;
+  color: #1e8449;
+  border: 1px solid #82e0aa;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
 .student-dashboard {
   padding: 30px;
 }

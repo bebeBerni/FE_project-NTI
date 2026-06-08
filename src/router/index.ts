@@ -88,6 +88,30 @@ const routes: RouteRecordRaw[] = [
   path: "/all_users",
   component: UsersTableView
 },
+{
+  path: '/student/teams/create',
+  name: 'student-team-create',
+  component: () => import('../views/CreateTeam.vue'),
+  meta: {
+    requiresAuth: true,
+  },
+},
+{
+  path: '/student/projects/create',
+  name: 'student-project-create',
+  component: () => import('../views/CreateProject.vue'),
+  meta: {
+    requiresAuth: true,
+  },
+},
+{
+  path: '/student/project-applications/:projectApplicationId/upload-cv',
+  name: 'student-upload-cv',
+  component: () => import('../components/dashboards/UploadCV.vue'),
+  meta: {
+    requiresAuth: true,
+  },
+},
 //Mentors
 {
   path: "/all_mentors",
