@@ -80,6 +80,7 @@ onMounted(() => {
               <th>Email</th>
               <th>Specialization</th>
               <th>Phone</th>
+              <th>Actions</th>
             </tr>
           </thead>
 

@@ -11,17 +11,20 @@ interface User {
   phone: string
   email: string
   email_verified_at: string | null
+  role: string
 }
 
 const users = ref<User[]>([])
 const loading = ref(false)
-
 const search = ref('')
-
-
-
 const total = ref(0)
+const editingUser = ref<User | null>(null)
 
+const roles: { label: string; value: string }[] = [
+  { label: 'Admin', value: 'admin' },
+  { label: 'Mentor', value: 'mentor' },
+  { label: 'Student', value: 'student' },
+]
 
 
 // LOAD USERS FUNCTION
@@ -59,20 +62,64 @@ onMounted(() => {
   loadUsers()
 })
 
+
+function editUser(user: User) {
+  editingUser.value = { ...user }
+}
+
+async function saveUser() {
+  if (!editingUser.value) return
+
+  try {
+    await api.put(
+      `/admin/users/${editingUser.value.id}`,
+      {
+        first_name: editingUser.value.first_name,
+        last_name: editingUser.value.last_name,
+        phone: editingUser.value.phone,
+        email: editingUser.value.email,
+         role: editingUser.value.role,
+      }
+    )
+
+    await loadUsers()
+        // SUCCESS után
+    editingUser.value = null
+      alert('User updated successfully')
+
+    editingUser.value = null
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+async function deleteUser(id: number) {
+  if (!confirm('Delete this user?')) return
+
+  try {
+    await api.delete(`/admin/users/${id}`)
+
+    await loadUsers()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
 </script>
 
 
 <template>
   <div class="users-page">
     <div class="users-card">
+
+      <!-- HEADER -->
       <div class="users-header">
         <div>
           <h1 class="users-title">Users</h1>
           <p class="users-subtitle">Manage registered users</p>
           <p>Total users: {{ total }}</p>
         </div>
-
-        <!-- Search input -->
 
         <input
           v-model="search"
@@ -82,6 +129,7 @@ onMounted(() => {
         >
       </div>
 
+      <!-- TABLE -->
       <div class="table-wrapper">
         <table class="users-table">
           <thead>
@@ -92,19 +140,19 @@ onMounted(() => {
               <th>Phone</th>
               <th>Email</th>
               <th>Verified</th>
+              <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr
-              v-for="user in users"
-              :key="user.id"
-            >
+            <tr v-for="user in users" :key="user.id">
               <td>{{ user.id }}</td>
               <td>{{ user.first_name }}</td>
               <td>{{ user.last_name }}</td>
               <td>{{ user.phone }}</td>
               <td>{{ user.email }}</td>
+
               <td>
                 <span
                   v-if="user.email_verified_at"
@@ -112,7 +160,6 @@ onMounted(() => {
                 >
                   Verified
                 </span>
-
                 <span
                   v-else
                   class="badge badge-danger"
@@ -120,13 +167,28 @@ onMounted(() => {
                   Not verified
                 </span>
               </td>
+
+              <td>{{ user.role }}</td>
+
+              <td>
+                <button
+                  class="btn-edit"
+                  @click="editUser(user)"
+                >
+                  Edit
+                </button>
+
+                <button
+                  class="btn-delete"
+                  @click="deleteUser(user.id)"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
 
             <tr v-if="!loading && users.length === 0">
-              <td
-                colspan="6"
-                class="empty-state"
-              >
+              <td colspan="8" class="empty-state">
                 No users found
               </td>
             </tr>
@@ -134,9 +196,47 @@ onMounted(() => {
         </table>
       </div>
 
+    </div>
+  </div>
+
+  <!-- EDIT USER MODAL -->
+  <div
+    v-if="editingUser"
+    class="modal-overlay"
+    @click.self="editingUser = null"
+  >
+    <div class="modal">
+
+      <h2>Edit User</h2>
+
+      <input
+        v-model="editingUser.first_name"
+        placeholder="First name"
+      />
+
+      <input
+        v-model="editingUser.last_name"
+        placeholder="Last name"
+      />
+
+      <input
+        v-model="editingUser.phone"
+        placeholder="Phone"
+      />
+
+      <input
+        v-model="editingUser.email"
+        placeholder="Email"
+      />
+
+      <div class="modal-actions">
+        <button @click="saveUser">Save</button>
+        <button @click="editingUser = null">Cancel</button>
+      </div>
 
     </div>
   </div>
+
 </template>
 
 <style scoped>
@@ -243,5 +343,42 @@ onMounted(() => {
 }
 
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.role-select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 120px;
+  overflow-y: auto;
+}
 </style>
 
