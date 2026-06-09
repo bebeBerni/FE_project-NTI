@@ -167,44 +167,6 @@
     </button>
   </div>
 </section>
-<section
-  v-if="applications.length > 0"
-  class="commission-section"
->
-  <h2>Pending Project Applications</h2>
-
-  <div
-    v-for="application in applications"
-    :key="application.id"
-    class="list-item"
-  >
-    <h3>
-      {{ application.project.title }}
-    </h3>
-
-    <p>
-      <strong>Team:</strong>
-      {{ application.team.name }}
-    </p>
-
-    <p>
-      <strong>Category:</strong>
-      {{ application.category.name }}
-    </p>
-
-    <button
-      @click="approveApplication(application.id)"
-    >
-      Approve
-    </button>
-
-    <button
-      @click="rejectApplication(application.id)"
-    >
-      Reject
-    </button>
-  </div>
-</section>
   </div>
 </template>
 
