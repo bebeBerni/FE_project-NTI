@@ -26,6 +26,14 @@
         <template v-if="myTeam">
           <p><strong>{{ myTeam.name }}</strong></p>
           <p>My role: {{ myTeam.my_role || myTeam.pivot?.member_role || 'Member' }}</p>
+
+          <button
+            class="leave-btn"
+            @click="leaveTeam"
+          >
+          Leave Team
+          </button>
+
         </template>
 
         <p v-else>You are not in a team yet.</p>
@@ -91,40 +99,83 @@
     </section>
 
     <section v-if="myTeam" class="team-section">
-      <h2>My Team Details</h2>
+  <h2>My Team Details</h2>
 
-      <div class="list-item">
-        <h3>{{ myTeam.name }}</h3>
+  <div class="list-item">
+    <h3>{{ myTeam.name }}</h3>
 
-        <p v-if="myTeam.description">
-          <strong>Description:</strong> {{ myTeam.description }}
-        </p>
+    <p v-if="myTeam.description">
+      <strong>Description:</strong> {{ myTeam.description }}
+    </p>
 
-        <p v-if="myTeam.created_at">
-          <strong>Created at:</strong> {{ formatDate(myTeam.created_at) }}
-        </p>
-      </div>
+    <p v-if="myTeam.created_at">
+      <strong>Created at:</strong> {{ formatDate(myTeam.created_at) }}
+    </p>
+  </div>
 
-      <h2>Team Members</h2>
+  <h2>Team Members</h2>
 
-      <div
-        v-for="member in teamMembers"
-        :key="member.id"
-        class="list-item"
+  <div
+    v-for="member in teamMembers"
+    :key="member.id"
+    class="list-item"
+  >
+    <h3>
+      {{ member.first_name || member.user?.first_name }}
+      {{ member.last_name || member.user?.last_name }}
+    </h3>
+
+    <p>Email: {{ member.email || member.user?.email }}</p>
+
+    <p>
+      Role in team:
+      {{ member.member_role || member.pivot?.member_role || 'Member' }}
+    </p>
+  </div>
+
+  <div
+    v-if="
+      pendingTeamRequests.length > 0 &&
+      teamMembers.some(
+        member =>
+          member.user?.email === user.email &&
+          (member.pivot?.member_role === 'leader' ||
+            member.member_role === 'leader')
+      )
+    "
+    class="pending-requests"
+  >
+    <h2>Pending Join Requests</h2>
+
+    <div
+      v-for="request in pendingTeamRequests"
+      :key="request.id"
+      class="list-item"
+    >
+      <h3>
+        {{ request.student.user.first_name }}
+        {{ request.student.user.last_name }}
+      </h3>
+
+      <p>
+        {{ request.student.user.email }}
+      </p>
+
+      <button
+        @click="approveRequest(request.id)"
       >
-        <h3>
-          {{ member.first_name || member.user?.first_name }}
-          {{ member.last_name || member.user?.last_name }}
-        </h3>
+        Approve
+      </button>
 
-        <p>Email: {{ member.email || member.user?.email }}</p>
-
-        <p>
-          Role in team:
-          {{ member.member_role || member.pivot?.member_role || 'Member' }}
-        </p>
-      </div>
-    </section>
+      <button
+        class="reject-btn"
+        @click="rejectRequest(request.id)"
+      >
+        Reject
+      </button>
+    </div>
+  </div>
+</section>
 
     <section v-if="!myProject">
       <h2>Available Projects</h2>
@@ -225,6 +276,19 @@ interface TeamMember {
     email?: string
   }
 }
+interface TeamJoinRequest {
+  id: number
+
+  student: {
+    id: number
+
+    user: {
+      first_name: string
+      last_name: string
+      email: string
+    }
+  }
+}
 
 export default {
   name: 'StudentDashboard',
@@ -242,16 +306,18 @@ export default {
   myProject: Project | null
   availableProjects: Project[]
   availableTeams: Team[]
+  pendingTeamRequests: TeamJoinRequest[]
   cvUploaded: boolean
-} {
+}  {
   return {
-    myTeam: null,
-    teamMembers: [],
-    myProject: null,
-    availableProjects: [],
-    availableTeams: [],
-    cvUploaded: false,
-  }
+  myTeam: null,
+  teamMembers: [],
+  myProject: null,
+  availableProjects: [],
+  availableTeams: [],
+  pendingTeamRequests: [],
+  cvUploaded: false,
+}
 },
 
  mounted() {
@@ -269,6 +335,8 @@ export default {
           response.data.team_members || response.data.members || []
         this.myProject =
           response.data.project || response.data.my_project || null
+        this.pendingTeamRequests =
+          response.data.pending_team_requests || []
 
         if (!this.myProject) {
           await this.loadAvailableProjects()
@@ -383,6 +451,63 @@ async joinTeamWithoutCv(teamId: number) {
       alert(error.response?.data?.message || 'Failed to join team.')
     } else {
       alert('Unexpected error occurred.')
+    }
+  }
+},
+async leaveTeam() {
+  if (!this.myTeam) return
+
+  const accept = confirm(
+    'Are you sure you want to leave this team?'
+  )
+
+  if (!accept) return
+
+  try {
+    await api.post(`/student/teams/${this.myTeam.id}/leave`)
+
+    alert('You left the team successfully.')
+
+    this.myTeam = null
+    this.teamMembers = []
+
+    await this.loadDashboard()
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message || 'Failed to leave team.')
+    } else {
+      alert('Unexpected error occurred.')
+    }
+  }
+},
+async approveRequest(requestId: number) {
+  try {
+    await api.post(
+      `/leader/team-requests/${requestId}/approve`
+    )
+
+    alert('Request approved.')
+
+    await this.loadDashboard()
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message)
+    }
+  }
+},
+
+async rejectRequest(requestId: number) {
+  try {
+    await api.post(
+      `/leader/team-requests/${requestId}/reject`
+    )
+
+    alert('Request rejected.')
+
+    await this.loadDashboard()
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message)
     }
   }
 },
