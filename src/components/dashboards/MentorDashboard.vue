@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/block-lang -->
 <template>
   <div class="mentor-dashboard">
     <h1>Mentor Dashboard</h1>
@@ -100,9 +101,114 @@
         </div>
       </div>
     </section>
+    <section v-if="isCommissionMember">
+  <h2>Commission Applications</h2>
+
+  <div
+    v-for="application in applications"
+    :key="application.id"
+  >
+    <h3>{{ application.project.title }}</h3>
+
+    <p>Team: {{ application.team.name }}</p>
+
+    <button
+      @click="approveApplication(application.id)"
+    >
+      Approve
+    </button>
+
+    <button
+      @click="rejectApplication(application.id)"
+    >
+      Reject
+    </button>
+  </div>
+</section>
+<section
+  v-if="applications && applications.length > 0"
+  class="commission-section"
+>
+  <h2>Project Applications Waiting for Decision</h2>
+
+  <div
+    v-for="application in applications"
+    :key="application.id"
+    class="list-item"
+  >
+    <h3>{{ application.project.title }}</h3>
+
+    <p>
+      <strong>Team:</strong>
+      {{ application.team.name }}
+    </p>
+
+    <p>
+      <strong>Category:</strong>
+      {{ application.category.name }}
+    </p>
+
+    <p>
+      <strong>Status:</strong>
+      {{ application.status }}
+    </p>
+
+    <button
+      @click="approveApplication(application.id)"
+    >
+      Approve
+    </button>
+
+    <button
+      class="danger"
+      @click="rejectApplication(application.id)"
+    >
+      Reject
+    </button>
+  </div>
+</section>
+<section
+  v-if="applications.length > 0"
+  class="commission-section"
+>
+  <h2>Pending Project Applications</h2>
+
+  <div
+    v-for="application in applications"
+    :key="application.id"
+    class="list-item"
+  >
+    <h3>
+      {{ application.project.title }}
+    </h3>
+
+    <p>
+      <strong>Team:</strong>
+      {{ application.team.name }}
+    </p>
+
+    <p>
+      <strong>Category:</strong>
+      {{ application.category.name }}
+    </p>
+
+    <button
+      @click="approveApplication(application.id)"
+    >
+      Approve
+    </button>
+
+    <button
+      @click="rejectApplication(application.id)"
+    >
+      Reject
+    </button>
+  </div>
+</section>
   </div>
 </template>
 
+<!-- eslint-disable vue/block-lang -->
 <script>
 import api from '@/api/axios'
 
@@ -115,6 +221,7 @@ export default {
       mentor: {},
       assignedTeams: [],
       studentInputs: {},
+      applications: [],
     }
   },
 
@@ -125,16 +232,58 @@ export default {
 
   methods: {
     async loadDashboard() {
-      try {
-        const response = await api.get('/mentor/dashboard')
+  try {
+    const response = await api.get('/mentor/dashboard')
 
-        this.user = response.data.user || {}
-        this.mentor = response.data.mentor || response.data.user?.mentor || {}
-      } catch (error) {
-        console.error(error)
-        alert('Failed to load mentor dashboard.')
-      }
-    },
+    this.user = response.data.user || {}
+    this.mentor =
+      response.data.mentor ||
+      response.data.user?.mentor ||
+      {}
+
+    try {
+      const applicationsResponse = await api.get(
+        '/commission/applications'
+      )
+
+      this.applications =
+        applicationsResponse.data.applications || []
+    } catch {
+      this.applications = []
+    }
+  } catch (error) {
+    console.error(error)
+    alert('Failed to load mentor dashboard.')
+  }
+},
+async approveApplication(applicationId) {
+  try {
+    await api.post(
+      `/commission/applications/${applicationId}/approve`
+    )
+
+    await this.loadDashboard()
+
+    alert('Application approved.')
+  } catch (error) {
+    console.error(error)
+    alert('Failed to approve.')
+  }
+},
+async rejectApplication(applicationId) {
+  try {
+    await api.post(
+      `/commission/applications/${applicationId}/reject`
+    )
+
+    await this.loadDashboard()
+
+    alert('Application rejected.')
+  } catch (error) {
+    console.error(error)
+    alert('Failed to reject.')
+  }
+},
 
     async loadAssignedTeams() {
       try {
