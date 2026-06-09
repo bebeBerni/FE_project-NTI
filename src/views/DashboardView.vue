@@ -18,6 +18,11 @@
       :user="user"
     />
 
+     <CommissionDashboard
+      v-else-if="role === 'commission'"
+      :user="user"
+    />
+
     <AdminDashboard
       v-else-if="role === 'admin'"
       :user="user"
@@ -34,16 +39,18 @@ import StudentDashboard from '../components/dashboards/StudentDashboard.vue'
 import MentorDashboard from '../components/dashboards/MentorDashboard.vue'
 import CompanyDashboard from '../components/dashboards/CompanyDashboard.vue'
 import AdminDashboard from '../components/dashboards/AdminDashboard.vue'
+import CommissionDashboard from '../components/dashboards/CommissionDashboard.vue'
 
 export default {
   name: 'DashboardView',
 
   components: {
-    StudentDashboard,
-    MentorDashboard,
-    CompanyDashboard,
-    AdminDashboard,
-  },
+  StudentDashboard,
+  MentorDashboard,
+  CompanyDashboard,
+  CommissionDashboard,
+  AdminDashboard,
+},
 
   data() {
     return {
@@ -58,8 +65,16 @@ export default {
     },
 
     role() {
-      return this.user?.roles?.[0]?.name?.toLowerCase() || ''
-    },
+  const roles = this.user?.roles?.map(r => r.name.toLowerCase()) || []
+
+  if (roles.includes('admin')) return 'admin'
+  if (roles.includes('commission')) return 'commission'
+  if (roles.includes('mentor')) return 'mentor'
+  if (roles.includes('company')) return 'company'
+  if (roles.includes('student')) return 'student'
+
+  return ''
+}
   },
 
   async mounted() {
