@@ -134,6 +134,15 @@ const routes: RouteRecordRaw[] = [
   name: 'ForgotPassword',
   component: () => import('../views/ForgotPassword.vue'),
 },
+{
+  path: '/reset-password/:token',
+  name: 'ResetPassword',
+  component: () => import('../views/ResetPassword.vue'),
+},
+{
+  path: '/email-verified',
+  component: () => import('../views/EmailVerified.vue')
+}
 ]
 
 const router = createRouter({
