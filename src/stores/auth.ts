@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import api from '../api/axios'
 import router from '@/router'
+import axios from 'axios'
 
 type User = {
   id: number
@@ -58,6 +59,26 @@ type RegisterCompanyData = {
   address: string
 }
 
+function getErrorMessage(error: unknown, fallback = 'Something went wrong') {
+  if (axios.isAxiosError(error)) {
+    if (error.response?.data?.message) {
+      return error.response.data.message
+    }
+
+    if (error.response?.data?.errors) {
+      return Object.values(error.response.data.errors)
+        .flat()
+        .join(' ')
+    }
+  }
+
+  if (error instanceof Error) {
+    return error.message
+  }
+
+  return fallback
+}
+
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     token: localStorage.getItem('token'),
@@ -87,7 +108,7 @@ export const useAuthStore = defineStore('auth', {
 
         return response.data
       } catch (error: unknown) {
-        this.error = error instanceof Error ? error.message : 'Login failed'
+        this.error = getErrorMessage(error, 'Incorrect email or password.')
         throw error
       } finally {
         this.loading = false
@@ -118,8 +139,7 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post('/register/student', data)
         return response.data
       } catch (error: unknown) {
-        this.error =
-          error instanceof Error ? error.message : 'Student registration failed'
+        this.error = getErrorMessage(error, 'Student registration failed.')
         throw error
       } finally {
         this.loading = false
@@ -134,8 +154,7 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post('/register/mentor', data)
         return response.data
       } catch (error: unknown) {
-        this.error =
-          error instanceof Error ? error.message : 'Mentor registration failed'
+        this.error = getErrorMessage(error, 'Mentor registration failed.')
         throw error
       } finally {
         this.loading = false
@@ -150,8 +169,7 @@ export const useAuthStore = defineStore('auth', {
         const response = await api.post('/register/company', data)
         return response.data
       } catch (error: unknown) {
-        this.error =
-          error instanceof Error ? error.message : 'Company registration failed'
+        this.error = getErrorMessage(error, 'Company registration failed.')
         throw error
       } finally {
         this.loading = false
