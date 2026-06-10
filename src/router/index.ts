@@ -154,11 +154,6 @@ const routes: RouteRecordRaw[] = [
   path: '/email-verified',
   component: () => import('../views/EmailVerified.vue')
 },
-{
-  path: '/email-verified',
-  name: 'EmailVerified',
-  component: () => import('@/views/EmailVerifiedView.vue')
-}
 ]
 
 const router = createRouter({

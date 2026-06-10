@@ -12,11 +12,6 @@
         <h3>Pending Projects</h3>
         <p>{{ pendingProjects }}</p>
       </div>
-
-      <div class="card">
-        <h3>Approved Projects</h3>
-        <p>{{ approvedProjects }}</p>
-      </div>
     </div>
 
     <div class="actions">
@@ -52,8 +47,9 @@
 
       <select v-model="form.status" required>
         <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="rejected">Rejected</option>
+        <option value="active">Active</option>
+        <option value="paused">Paused</option>
+        <option value="finished">Finished</option>
       </select>
 
       <input v-model="form.deadline" type="date" />
@@ -107,7 +103,7 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable vue/block-lang -->
 <script lang="ts">
 import api from '@/api/axios'
 

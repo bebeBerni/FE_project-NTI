@@ -80,6 +80,7 @@
       </div>
 
       <button type="submit">Register</button>
+      
     </form>
 
     <p class="auth-switch">
@@ -333,7 +334,7 @@ export default {
 
       this.errors = {}
       this.successMessage = ""
-
+      
       try {
         await this.registerByRole()
         this.handleSuccess()

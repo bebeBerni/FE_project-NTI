@@ -64,7 +64,7 @@
     </section>
 
     <section v-if="myProject" class="project-section">
-      <h2>My Project Details</h2>
+      <h2>My Project Application Details</h2>
 
       <div class="list-item">
         <h3>{{ myProject.title }}</h3>
@@ -73,12 +73,26 @@
           <strong>Description:</strong> {{ myProject.description }}
         </p>
 
-        <p>
-          <strong>Status:</strong>
-          <span :class="['status', getStatusClass(myProject.status)]">
-            {{ formatStatus(myProject.status) }}
-          </span>
-        </p>
+        <p v-if="myProject.project_application_status">
+  <strong>Application Status:</strong>
+
+  <span
+    :class="[
+      'status',
+      getStatusClass(myProject.project_application_status)
+    ]"
+  >
+    {{
+      formatStatus(
+        myProject.project_application_status
+      )
+    }}
+  </span>
+</p>
+<p v-if="myProject.deadline">
+  <strong>Deadline:</strong>
+  {{ formatDate(myProject.deadline) }}
+</p>
 
         <p v-if="myProject.company">
           <strong>Company:</strong>
@@ -88,14 +102,6 @@
         <p v-if="myProject.mentor">
           <strong>Mentor:</strong>
           {{ myProject.mentor.first_name }} {{ myProject.mentor.last_name }}
-        </p>
-
-        <p v-if="myProject.created_at">
-          <strong>Created at:</strong> {{ formatDate(myProject.created_at) }}
-        </p>
-
-        <p v-if="myProject.updated_at">
-          <strong>Updated at:</strong> {{ formatDate(myProject.updated_at) }}
         </p>
       </div>
     </section>
@@ -203,14 +209,10 @@
         class="list-item"
       >
         <h3>{{ project.title }}</h3>
-        <p>{{ project.description }}</p>
+        <p><Strong>Description: </Strong>{{ project.description }}</p>
+        <p><strong>Budget: </strong>{{ project.budget }}</p>
+        <p><strong>Deadline:</strong> {{ formatDate(project.deadline) }}</p>
 
-        <p>
-          <strong>Status:</strong>
-          <span :class="['status', getStatusClass(project.status ?? '')]">
-            {{ formatStatus(project.status) }}
-          </span>
-        </p>
 
         <button @click="joinProject(project.id)">
           Join Project
@@ -262,14 +264,16 @@ interface Project {
   title: string
   description?: string
   status?: string
-  created_at?: string
-  updated_at?: string
+
+  project_application_status?: string
+
+  deadline?: string
+  budget?: number;
 
   company?: {
     company_name?: string
     name?: string
   }
-
   mentor?: {
     first_name?: string
     last_name?: string
@@ -365,6 +369,11 @@ computed: {
           response.data.pending_team_requests || []
         this.hasCv = response.data.has_cv
 
+if (this.myProject) {
+  this.myProject.project_application_status =
+    response.data.project_application_status
+}
+
         if (
   !this.myProject &&
   this.myTeam &&
@@ -392,6 +401,11 @@ openTeamChat(teamId: number) {
     `/team-chat/${teamId}`
   )
 },
+formatDate(dateString?: string) {
+    if (!dateString) return '-';
+
+    return new Date(dateString).toLocaleDateString('sk-SK');
+  },
 
     async loadAvailableProjects() {
       try {
@@ -578,10 +592,6 @@ async rejectRequest(requestId: number) {
 
     createTeam() {
       this.$router.push('/student/teams/create')
-    },
-
-    formatDate(date: string) {
-      return new Date(date).toLocaleDateString()
     },
 
     formatStatus(status?: string) {

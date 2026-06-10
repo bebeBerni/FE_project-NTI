@@ -164,11 +164,20 @@
     class="list-item"
   >
     <h3>{{ application.project.title }}</h3>
+    <p>
+      <strong>Description</strong>
+      {{ application.project.description }}
+    </p>
 
     <p>
       <strong>Team:</strong>
       {{ application.team.name }}
     </p>
+    <p>
+      <strong>Motivation:</strong>
+      {{ application.motivation }}
+    </p>
+  
 
     <p>
       <strong>Category:</strong>
