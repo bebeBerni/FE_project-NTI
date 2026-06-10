@@ -137,6 +137,16 @@
       Role in team:
       {{ member.member_role || member.pivot?.member_role || 'Member' }}
     </p>
+    <button
+  v-if="
+    isLeader &&
+    (member.pivot?.member_role !== 'leader')
+  "
+  class="reject-btn"
+  @click="removeMember(member.id)"
+>
+  Remove Member
+</button>
     
   </div>
 
@@ -395,6 +405,27 @@ openTeamChat(teamId: number) {
         }
       }
     },
+    async removeMember(memberId: number) {
+  const accept = confirm(
+    'Are you sure you want to remove this member from the team?'
+  )
+
+  if (!accept) return
+
+  try {
+    await api.delete(
+      `/leader/teams/${this.myTeam?.id}/members/${memberId}`
+    )
+
+    alert('Member removed successfully.')
+
+    await this.loadDashboard()
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message)
+    }
+  }
+},
 
     async loadAvailableTeams() {
       try {
