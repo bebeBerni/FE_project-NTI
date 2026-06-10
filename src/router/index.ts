@@ -10,6 +10,7 @@ import ContactView from '../views/ContactView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import UsersTableView from '../views/UsersTableView.vue'
 import MentorsTableView from '../views/MentorsTableView.vue'
+import TeamChatView from '@/views/TeamChatView.vue'
 
 // existing
 import TeamView from '../views/TeamView.vue'
@@ -61,6 +62,10 @@ const routes: RouteRecordRaw[] = [
     name: 'team-detail',
     component: TeamDetailView,
     props: true,
+  },
+  {
+    path: '/team-chat/:id',
+    component: TeamChatView
   },
 
   // projects
@@ -117,6 +122,12 @@ const routes: RouteRecordRaw[] = [
   path: "/all_mentors",
  component: MentorsTableView
 },
+{
+  path: '/mentor/teams/:id/chat',
+  name: 'team-chat',
+  component: TeamChatView,
+},
+
 
   // auth
   {

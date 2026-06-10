@@ -102,16 +102,20 @@
   <h2>My Team Details</h2>
 
   <div class="list-item">
-    <h3>{{ myTeam.name }}</h3>
+  <h3>{{ myTeam.name }}</h3>
 
-    <p v-if="myTeam.description">
-      <strong>Description:</strong> {{ myTeam.description }}
-    </p>
+  <p>
+    <strong>Project:</strong>
+    {{ myProject?.title || 'No project assigned' }}
+  </p>
 
-    <p v-if="myTeam.created_at">
-      <strong>Created at:</strong> {{ formatDate(myTeam.created_at) }}
-    </p>
-  </div>
+  <button
+    class="chat-btn"
+    @click="openTeamChat(myTeam.id)"
+  >
+    Team Chat
+  </button>
+</div>
 
   <h2>Team Members</h2>
 
@@ -131,6 +135,7 @@
       Role in team:
       {{ member.member_role || member.pivot?.member_role || 'Member' }}
     </p>
+    
   </div>
 
   <div
@@ -353,6 +358,11 @@ export default {
         }
       }
     },
+openTeamChat(teamId: number) {
+  this.$router.push(
+    `/team-chat/${teamId}`
+  )
+},
 
     async loadAvailableProjects() {
       try {

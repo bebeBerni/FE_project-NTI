@@ -3,105 +3,132 @@
   <div class="mentor-dashboard">
     <h1>Mentor Dashboard</h1>
 
-    <section class="cards">
-      <div class="card">
-        <h3>Mentor</h3>
-        <p>{{ user.first_name }} {{ user.last_name }}</p>
+    <section class="mentor-header">
+  <div>
+    <h1>
+      {{ user.first_name }} {{ user.last_name }}
+    </h1>
+    <p class="mentor-specialization">
+      {{ mentor.specialization }}
+    </p>
+  </div>
+
+  <div class="mentor-contact">
+    <p>{{ user.email }}</p>
+    <p>{{ user.phone }}</p>
+  </div>
+</section>
+<section class="stats-grid">
+  <div class="stat-card">
+    <h2>{{ assignedTeams.length }}</h2>
+    <p>Assigned Teams</p>
+  </div>
+
+  <div class="stat-card">
+    <h2>{{ applications.length }}</h2>
+    <p>Pending Applications</p>
+  </div>
+
+  <div class="stat-card">
+    <h2>
+      {{ assignedTeams.reduce((sum, team) => sum + (team.students?.length || 0), 0) }}
+    </h2>
+    <p>Total Students</p>
+  </div>
+</section>
+
+
+<section class="teams-section">
+  <h2>Assigned Teams</h2>
+
+  <p v-if="assignedTeams.length === 0">
+    You do not have any assigned teams yet.
+  </p>
+
+  <div
+    v-for="team in assignedTeams"
+    :key="team.id"
+    class="team-card"
+  >
+    <div class="team-header">
+      <div>
+        <h3>{{ team.name }}</h3>
+
+        <p v-if="team.projects?.length">
+  <strong>Project:</strong>
+  {{ team.projects[0].title }}
+</p>
       </div>
 
-      <div class="card">
-        <h3>Email</h3>
-        <p>{{ user.email }}</p>
-      </div>
+      <span
+        v-if="team.project"
+        :class="[
+          'status',
+          getStatusClass(team.project.status)
+        ]"
+      >
+        {{ formatStatus(team.project.status) }}
+      </span>
+    </div>
 
-      <div class="card">
-        <h3>Specialization</h3>
-        <p>{{ mentor.specialization }}</p>
-      </div>
+    <div
+      v-if="team.project"
+      class="project-info"
+    >
+      <p>
+        <strong>Project:</strong>
+        {{ team.project.title }}
+      </p>
 
-      <div class="card">
-        <h3>Assigned Teams</h3>
-        <p>{{ assignedTeams.length }}</p>
-      </div>
-    </section>
+      <p>
+        <strong>Status:</strong>
+        {{ formatStatus(team.project.status) }}
+      </p>
+    </div>
 
-    <section class="profile-section">
-      <h2>Mentor Profile</h2>
+    <div class="students-section">
+      <h4>Students</h4>
 
-      <div class="list-item">
-        <h3>{{ user.first_name }} {{ user.last_name }}</h3>
-        <p><strong>Phone:</strong> {{ user.phone }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Specialization:</strong> {{ mentor.specialization }}</p>
-        <p><strong>Bio:</strong> {{ mentor.bio }}</p>
-      </div>
-    </section>
-
-    <section class="teams-section">
-      <h2>Assigned Teams</h2>
-
-      <p v-if="assignedTeams.length === 0">
-        You do not have any assigned teams yet.
+      <p
+        v-if="
+          !team.students ||
+          team.students.length === 0
+        "
+      >
+        No students assigned.
       </p>
 
       <div
-        v-for="team in assignedTeams"
-        :key="team.id"
-        class="list-item"
+        v-for="student in team.students"
+        :key="student.id"
+        class="student-card"
       >
-        <h3>{{ team.name }}</h3>
-
-        <p v-if="team.project">
-          <strong>Project:</strong> {{ team.project.title }}
-        </p>
-
-        <p v-if="team.project">
-          <strong>Project status:</strong>
-          <span :class="['status', getStatusClass(team.project.status)]">
-            {{ formatStatus(team.project.status) }}
-          </span>
-        </p>
-
-        <h4>Students</h4>
-
-        <p v-if="!team.students || team.students.length === 0">
-          No students in this team yet.
-        </p>
-
-        <div
-          v-for="student in team.students"
-          :key="student.id"
-          class="student-row"
-        >
-          <span>
+        <div>
+          <strong>
             {{ student.user?.first_name || student.first_name }}
             {{ student.user?.last_name || student.last_name }}
-            -
+          </strong>
+
+          <p>
             {{ student.user?.email || student.email }}
-          </span>
-
-          <button
-            class="danger"
-            @click="removeStudentFromTeam(team.id, student.id)"
-          >
-            Remove
-          </button>
+          </p>
         </div>
-
-        <div class="add-student">
-          <input
-            v-model="studentInputs[team.id]"
-            type="number"
-            placeholder="Student ID"
-          />
-
-          <button @click="addStudentToTeam(team.id)">
-            Add Student
-          </button>
-        </div>
+        
       </div>
-    </section>
-    <section v-if="isCommissionMember">
+      <button
+  class="chat-btn"
+  @click="openTeamChat(team.id)"
+>
+  Team Chat
+</button>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section v-if="isCommissionMember">
   <h2>Commission Applications</h2>
 
   <div
@@ -217,6 +244,11 @@ export default {
     console.error(error)
     alert('Failed to load mentor dashboard.')
   }
+},
+openTeamChat(teamId) {
+  this.$router.push(
+    `/mentor/teams/${teamId}/chat`
+  )
 },
 async approveApplication(applicationId) {
   try {
@@ -462,5 +494,118 @@ button.danger:hover {
 .status-dark {
   background: #d5d8dc;
   color: #1c2833;
+}
+.mentor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.mentor-header h1 {
+  margin: 0;
+}
+
+.mentor-role {
+  color: #42b983;
+  font-weight: 600;
+  margin-top: 6px;
+}
+
+.mentor-specialization {
+  color: #666;
+}
+
+.mentor-contact {
+  text-align: right;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  text-align: center;
+}
+
+.stat-card h2 {
+  font-size: 2rem;
+  margin: 0;
+  color: #42b983;
+}
+
+.stat-card p {
+  margin-top: 10px;
+  color: #666;
+}
+.team-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.team-header h3 {
+  margin: 0;
+}
+
+.project-title {
+  color: #666;
+  margin-top: 4px;
+}
+
+.project-info {
+  margin-bottom: 20px;
+}
+
+.students-section h4 {
+  margin-bottom: 15px;
+}
+
+.student-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.student-card p {
+  margin: 4px 0 0;
+  color: #666;
+}
+
+.message-btn {
+  background: #42b983;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.message-btn:hover {
+  background: #369f6e;
 }
 </style>
