@@ -2,18 +2,14 @@
   <div class="student-dashboard">
     <h1>Student Dashboard</h1>
 
-    <div
-  v-if="cvUploaded"
-  class="success-message"
->
-  ✅ Your CV has been uploaded successfully.
-</div>
-
     <section class="cards">
-      <div v-if="!myProject" class="card">
-        <h3>Available Projects</h3>
-        <p>{{ availableProjects.length }}</p>
-      </div>
+      <div
+  v-if="!myProject && myTeam && isLeader"
+  class="card"
+>
+  <h3>Available Projects</h3>
+  <p>{{ availableProjects.length }}</p>
+</div>
 
       <div v-if="!myTeam" class="card">
         <h3>Available Teams</h3>
@@ -23,13 +19,14 @@
       <div class="card">
         <h3>My Team</h3>
 
-        <template v-if="myTeam">
+        <template v-if="myTeam" >
           <p><strong>{{ myTeam.name }}</strong></p>
           <p>My role: {{ myTeam.my_role || myTeam.pivot?.member_role || 'Member' }}</p>
 
           <button
-            class="leave-btn"
-            @click="leaveTeam"
+          v-if="!isLeader"
+          class="leave-btn"
+          @click="leaveTeam"
           >
           Leave Team
           </button>
@@ -58,7 +55,12 @@
 
     <section class="actions">
       <button v-if="!myTeam" @click="createTeam">Create Team</button>
-      <button v-if="!myProject" @click="createProject">Create Project</button>
+      <button
+  v-if="!myProject && myTeam && isLeader"
+  @click="createProject"
+>
+  Create Project
+</button>
     </section>
 
     <section v-if="myProject" class="project-section">
@@ -182,7 +184,7 @@
   </div>
 </section>
 
-    <section v-if="!myProject">
+    <section v-if="!myProject && myTeam && isLeader">
       <h2>Available Projects</h2>
 
       <div
@@ -312,7 +314,7 @@ export default {
   availableProjects: Project[]
   availableTeams: Team[]
   pendingTeamRequests: TeamJoinRequest[]
-  cvUploaded: boolean
+  hasCv: boolean
 }  {
   return {
   myTeam: null,
@@ -321,13 +323,22 @@ export default {
   availableProjects: [],
   availableTeams: [],
   pendingTeamRequests: [],
-  cvUploaded: false,
+  hasCv: false,
 }
 },
 
  mounted() {
-  this.cvUploaded = localStorage.getItem('cv_uploaded') === 'yes'
   this.loadDashboard()
+},
+computed: {
+  isLeader(): boolean {
+    if (!this.myTeam) return false
+
+    return (
+      this.myTeam.my_role === 'leader' ||
+      this.myTeam.pivot?.member_role === 'leader'
+    )
+  },
 },
 
   methods: {
@@ -342,10 +353,18 @@ export default {
           response.data.project || response.data.my_project || null
         this.pendingTeamRequests =
           response.data.pending_team_requests || []
+        this.hasCv = response.data.has_cv
 
-        if (!this.myProject) {
-          await this.loadAvailableProjects()
-        }
+        if (
+  !this.myProject &&
+  this.myTeam &&
+  (
+    this.myTeam.my_role === 'leader' ||
+    this.myTeam.pivot?.member_role === 'leader'
+  )
+) {
+  await this.loadAvailableProjects()
+}
 
         if (!this.myTeam) {
           await this.loadAvailableTeams()
@@ -452,7 +471,7 @@ async joinTeamWithoutCv(teamId: number) {
   try {
     await api.post(`/student/teams/${teamId}/join`)
 
-    alert('You joined the team.')
+    alert('You sent a request to the team leader.')
 
     this.availableTeams = []
     await this.loadDashboard()
