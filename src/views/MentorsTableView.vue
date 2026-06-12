@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import api from '@/api/axios'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 
 interface Mentor {
@@ -42,7 +44,7 @@ async function loadMentors() {
 }
 
 async function deleteMentor(userId: number) {
-  if (!confirm('Are you sure you want to delete this mentor?')) {
+  if (!confirm(t('dashboard.messages.sureDelete'))) {
     return
   }
 
@@ -50,11 +52,13 @@ async function deleteMentor(userId: number) {
     await api.delete(`/admin/users/${userId}`)
 
     await loadMentors()
-    alert('Mentor deleted successfully!')
+
+    alert(t('dashboard.messages.mentorDeleted'))
   } catch (error) {
     console.error('Failed to delete mentor:', error)
   }
 }
+
 function editMentor(userId: number) {
   const mentor = mentors.value.find(m => m.user_id === userId)
 
@@ -73,13 +77,13 @@ async function updateMentor() {
       email: editingMentor.value.email,
       phone: editingMentor.value.phone,
       specialization: editingMentor.value.specialization,
-      bio: (editingMentor.value as any).bio
+      bio: editingMentor.value.bio
     })
 
- alert('Mentor updated successfully!')
+    alert(t('dashboard.messages.mentorUpdated'))
+
     showEditModal.value = false
     await loadMentors()
-
 
   } catch (error) {
     console.error(error)
@@ -104,9 +108,9 @@ onMounted(() => {
     <div class="mentors-card">
       <div class="mentors-header">
         <div>
-          <h1 class="mentors-title">Mentors</h1>
-          <p class="mentors-subtitle">Manage registered mentors</p>
-          <p>Total mentors: {{ total }}</p>
+          <h1 class="mentors-title">{{ $t('dashboard.MentorList.title') }}</h1>
+          <p class="mentors-subtitle">{{ $t('dashboard.MentorList.subtitle') }}</p>
+          <p>{{ $t('dashboard.MentorList.total') }}: {{ total }}</p>
         </div>
 
         <!-- Search input -->
@@ -123,13 +127,13 @@ onMounted(() => {
         <table class="mentors-table">
           <thead>
             <tr>
-              <th>User ID</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Specialization</th>
-              <th>Phone</th>
-              <th>Actions</th>
+              <th>{{ $t('dashboard.MentorList.user_id') }}</th>
+              <th>{{ $t('dashboard.MentorList.firstName') }}</th>
+              <th>{{ $t('dashboard.MentorList.lastName') }}</th>
+              <th>{{ $t('dashboard.MentorList.email') }}</th>
+              <th>{{ $t('dashboard.MentorList.specialization') }}</th>
+              <th>{{ $t('dashboard.MentorList.phone') }}</th>
+              <th>{{ $t('dashboard.MentorList.actions') }}</th>
             </tr>
           </thead>
 
@@ -149,14 +153,14 @@ onMounted(() => {
                   class="edit-btn"
                   @click="editMentor(mentor.user_id)"
                 >
-                  Edit
+                  {{ $t('dashboard.UserList.edit') }}
                 </button>
 
                 <button
                   class="delete-btn"
                   @click="deleteMentor(mentor.user_id)"
                 >
-                  Delete
+                  {{ $t('dashboard.UserList.delete') }}
                 </button>
  </td>
 
@@ -167,7 +171,7 @@ onMounted(() => {
                 colspan="6"
                 class="empty-state"
               >
-                No mentors found
+                {{ $t('dashboard.MentorList.empty') }}
               </td>
             </tr>
           </tbody>
@@ -184,17 +188,17 @@ onMounted(() => {
 
     <h2>Edit Mentor</h2>
 
-    first name
+    {{ $t('dashboard.MentorList.firstName') }}
     <input v-model="editingMentor!.first_name" placeholder="First name" />
-    last name
+    {{ $t('dashboard.MentorList.lastName') }}
     <input v-model="editingMentor!.last_name" placeholder="Last name" />
-    email
+    {{ $t('dashboard.MentorList.email') }}
     <input v-model="editingMentor!.email" placeholder="Email" />
-    phone
+    {{ $t('dashboard.MentorList.phone') }}
     <input v-model="editingMentor!.phone" placeholder="Phone" />
-    specialization
+    {{ $t('dashboard.MentorList.specialization') }}
     <input v-model="editingMentor!.specialization" placeholder="Specialization" />
-    bio
+    {{ $t('dashboard.MentorList.bio') }}
     <textarea v-model="editingMentor!.bio" placeholder="Bio"></textarea>
 
     <div class="modal-actions">

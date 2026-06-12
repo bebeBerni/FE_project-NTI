@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 
 import api from '@/api/axios'
 
@@ -80,7 +82,7 @@ async function saveUser() {
     await loadUsers()
         // SUCCESS után
     editingUser.value = null
-      alert('User updated successfully')
+       alert(t('dashboard.messages.mentorUpdated'))
 
     editingUser.value = null
   } catch (error) {
@@ -89,7 +91,7 @@ async function saveUser() {
 }
 
 async function deleteUser(id: number) {
-  if (!confirm('Delete this user?')) return
+  if (!confirm(t('dashboard.messages.sureDelete'))) return
 
   try {
     await api.delete(`/admin/users/${id}`)
@@ -111,9 +113,9 @@ async function deleteUser(id: number) {
       <!-- HEADER -->
       <div class="users-header">
         <div>
-          <h1 class="users-title">Users</h1>
-          <p class="users-subtitle">Manage registered users</p>
-          <p>Total users: {{ total }}</p>
+          <h1 class="users-title">{{ $t('dashboard.UserList.title') }}</h1>
+          <p class="users-subtitle">{{ $t('dashboard.UserList.subtitle') }}</p>
+          <p>{{ $t('dashboard.UserList.total') }}: {{ total }}</p>
         </div>
 
         <input
@@ -130,13 +132,13 @@ async function deleteUser(id: number) {
           <thead>
             <tr>
               <th>ID</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Phone</th>
-              <th>Email</th>
-              <th>Verified</th>
-              <th>Role</th>
-              <th>Actions</th>
+              <th>{{ $t('dashboard.UserList.firstName') }}</th>
+              <th>{{ $t('dashboard.UserList.lastName') }}</th>
+              <th>{{ $t('dashboard.UserList.phone') }}</th>
+              <th>{{ $t('dashboard.UserList.email') }}</th>
+              <th>{{ $t('dashboard.UserList.verified') }}</th>
+              <th>{{ $t('dashboard.UserList.role') }}</th>
+              <th>{{ $t('dashboard.UserList.actions') }}</th>
             </tr>
           </thead>
 
@@ -153,13 +155,13 @@ async function deleteUser(id: number) {
                   v-if="user.email_verified_at"
                   class="badge badge-success"
                 >
-                  Verified
+                  {{ $t('dashboard.UserList.verified') }}
                 </span>
                 <span
                   v-else
                   class="badge badge-danger"
                 >
-                  Not verified
+                  {{ $t('dashboard.UserList.notVerified') }}
                 </span>
               </td>
 
@@ -170,14 +172,14 @@ async function deleteUser(id: number) {
                   class="edit-btn"
                   @click="editUser(user)"
                 >
-                  Edit
+                  {{ $t('dashboard.UserList.edit') }}
                 </button>
 
                 <button
                   class="delete-btn"
                   @click="deleteUser(user.id)"
                 >
-                  Delete
+                  {{ $t('dashboard.UserList.delete') }}
                 </button>
               </td>
             </tr>
@@ -203,22 +205,24 @@ async function deleteUser(id: number) {
     <div class="modal">
 
       <h2>Edit User</h2>
-
+{{ $t('dashboard.UserList.firstName') }}
       <input
         v-model="editingUser.first_name"
         placeholder="First name"
       />
-
+{{ $t('dashboard.UserList.lastName') }}
       <input
         v-model="editingUser.last_name"
         placeholder="Last name"
       />
 
+      {{ $t('dashboard.UserList.phone') }}
       <input
         v-model="editingUser.phone"
         placeholder="Phone"
       />
 
+      {{ $t('dashboard.UserList.email') }}
       <input
         v-model="editingUser.email"
         placeholder="Email"

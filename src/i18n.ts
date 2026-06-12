@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n'
+import DashboardView from './views/DashboardView.vue'
 
 const messages = {
   en: {
@@ -15,7 +16,67 @@ const messages = {
   login: "Login",
   register: "Register"
 },
+//DASHBOARD
+dashboard:{
+  title: "Dashboard",
+  welcome: "Welcome back!",
 
+
+   admin_dashboard: {
+      title: "Admin Dashboard",
+      subtitle: "Management control panel",
+      users: "Users",
+      all_users: "All user list",
+      mentors: "Mentors",
+      all_mentors: "All mentors list",
+      assign_mentor: "Assign Mentor To Team",
+      team: "Team",
+      current_mentors: "Current Mentors",
+      select_mentor: "Select Mentor",
+      remove: "Remove",
+    },
+
+     UserList: {
+      title: "Users",
+      subtitle: "Manage registered users",
+      total: "Total users",
+      firstName: "First Name",
+      lastName: "Last Name",
+      email: "Email",
+      phone: "Phone",
+      role: "Role",
+      verified: "Verified",
+      notVerified: "Not verified",
+        actions: "Actions",
+        verify: "Verify",
+        delete: "Delete",
+        edit: "Edit",
+     },
+      MentorList: {
+      title: "Mentors",
+      subtitle: "Manage registered mentors",
+      total: "Total mentors",
+      user_id: "User ID",
+      expertise: "Expertise",
+      firstName: "First Name",
+      lastName: "Last Name",
+      email: "Email",
+      bio: "Bio",
+      phone: "Phone",
+       actions: "Actions",
+        assign: "Assign to Team",
+        remove: "Remove from Team",
+        specialization: "Specialization",
+        empty: "No mentors found"
+
+      },
+      messages:{
+        mentorUpdated: "Mentor updated successfully!",
+        mentorDeleted: "Mentor deleted successfully!",
+        sureDelete: "Are you sure you want to delete this mentor?"
+
+      }
+},
     home: {
       hero: {
         title: 'National Talent Innovation',
@@ -254,6 +315,73 @@ const messages = {
     register: "Registrácia"
   },
 
+  //DASHBOARD
+dashboard: {
+  title: "Nástenka",
+  welcome: "Vitajte späť!",
+
+  admin_dashboard: {
+    title: "Admin nástenka",
+    subtitle: "Ovládací panel správy",
+    users: "Používatelia",
+    all_users: "Zoznam všetkých používateľov",
+    mentors: "Mentori",
+    all_mentors: "Zoznam všetkých mentorov",
+    assign_mentor: "Priradiť mentora k tímu",
+    team: "Tím",
+    current_mentors: "Aktuálni mentori",
+    select_mentor: "Vybrať mentora",
+    remove: "Odstrániť"
+  },
+
+  UserList: {
+    title: "Používatelia",
+    subtitle: "Správa registrovaných používateľov",
+    total: "Celkový počet používateľov",
+
+    firstName: "Meno",
+    lastName: "Priezvisko",
+    email: "E-mail",
+    role: "Rola",
+    phone: "Telefón",
+
+    verified: "Overený",
+    notVerified: "Neoverený",
+
+    actions: "Akcie",
+    verify: "Overiť",
+    delete: "Odstrániť",
+    edit: "Upraviť"
+  },
+
+  MentorList: {
+    title: "Mentori",
+    subtitle: "Správa registrovaných mentorov",
+    total: "Celkový počet mentorov",
+
+    user_id: "ID používateľa",
+    expertise: "Odbornosť",
+
+    firstName: "Meno",
+    lastName: "Priezvisko",
+    email: "E-mail",
+    bio: "Bio",
+    phone: "Telefón",
+
+    actions: "Akcie",
+    assign: "Priradiť k tímu",
+    remove: "Odstrániť z tímu",
+
+    specialization: "Špecializácia",
+    empty: "Neboli nájdení žiadni mentori"
+  },
+
+  messages: {
+    mentorUpdated: "Mentor bol úspešne aktualizovaný!",
+    mentorDeleted: "Mentor bol úspešne odstránený!",
+    sureDelete: "Ste si istí, že chcete tohto mentora odstrániť?"
+  }
+},
     home: {
       hero: {
         title: 'Národná talentová inovácia',
