@@ -234,6 +234,7 @@ export default {
       } catch (error: any) {
         console.error("Error loading project histories:", error)
         this.historyError = "Could not load project histories from backend."
+
       } finally {
         this.loadingHistories = false
       }
