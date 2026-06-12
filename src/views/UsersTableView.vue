@@ -20,11 +20,6 @@ const search = ref('')
 const total = ref(0)
 const editingUser = ref<User | null>(null)
 
-const roles: { label: string; value: string }[] = [
-  { label: 'Admin', value: 'admin' },
-  { label: 'Mentor', value: 'mentor' },
-  { label: 'Student', value: 'student' },
-]
 
 
 // LOAD USERS FUNCTION
@@ -172,14 +167,14 @@ async function deleteUser(id: number) {
 
               <td>
                 <button
-                  class="btn-edit"
+                  class="edit-btn"
                   @click="editUser(user)"
                 >
                   Edit
                 </button>
 
                 <button
-                  class="btn-delete"
+                  class="delete-btn"
                   @click="deleteUser(user.id)"
                 >
                   Delete
@@ -379,6 +374,31 @@ async function deleteUser(id: number) {
   border-radius: 6px;
   max-height: 120px;
   overflow-y: auto;
+}
+
+.delete-btn {
+  border: none;
+  background: #dc3545;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #bb2d3b;
+}
+.edit-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background: #1d4ed8;
 }
 </style>
 

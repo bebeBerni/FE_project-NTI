@@ -10,12 +10,16 @@ interface Mentor {
   email: string
   specialization: string
   phone: string
+  bio: string
 }
 
 const mentors = ref<Mentor[]>([])
 const loading = ref(false)
 const search = ref('')
 const total = ref(0)
+const editingMentor = ref<Mentor | null>(null)
+const showEditModal = ref(false)
+
 
 async function loadMentors() {
   loading.value = true
@@ -37,6 +41,50 @@ async function loadMentors() {
   }
 }
 
+async function deleteMentor(userId: number) {
+  if (!confirm('Are you sure you want to delete this mentor?')) {
+    return
+  }
+
+  try {
+    await api.delete(`/admin/users/${userId}`)
+
+    await loadMentors()
+    alert('Mentor deleted successfully!')
+  } catch (error) {
+    console.error('Failed to delete mentor:', error)
+  }
+}
+function editMentor(userId: number) {
+  const mentor = mentors.value.find(m => m.user_id === userId)
+
+  if (!mentor) return
+
+  editingMentor.value = { ...mentor }
+  showEditModal.value = true
+}
+async function updateMentor() {
+  if (!editingMentor.value) return
+
+  try {
+    await api.put(`/admin/mentors/${editingMentor.value.user_id}`, {
+      first_name: editingMentor.value.first_name,
+      last_name: editingMentor.value.last_name,
+      email: editingMentor.value.email,
+      phone: editingMentor.value.phone,
+      specialization: editingMentor.value.specialization,
+      bio: (editingMentor.value as any).bio
+    })
+
+ alert('Mentor updated successfully!')
+    showEditModal.value = false
+    await loadMentors()
+
+
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 
 watch(search, () => {
@@ -51,6 +99,7 @@ onMounted(() => {
 
 
 <template>
+
   <div class="mentors-page">
     <div class="mentors-card">
       <div class="mentors-header">
@@ -95,6 +144,21 @@ onMounted(() => {
               <td>{{ mentor.email }}</td>
               <td>{{ mentor.specialization }}</td>
               <td>{{ mentor.phone }}</td>
+              <td>
+                <button
+                  class="edit-btn"
+                  @click="editMentor(mentor.user_id)"
+                >
+                  Edit
+                </button>
+
+                <button
+                  class="delete-btn"
+                  @click="deleteMentor(mentor.user_id)"
+                >
+                  Delete
+                </button>
+ </td>
 
             </tr>
 
@@ -113,6 +177,34 @@ onMounted(() => {
 
     </div>
   </div>
+
+  //EDIT PROFILE
+<div v-if="showEditModal" class="modal-overlay">
+  <div class="modal">
+
+    <h2>Edit Mentor</h2>
+
+    first name
+    <input v-model="editingMentor!.first_name" placeholder="First name" />
+    last name
+    <input v-model="editingMentor!.last_name" placeholder="Last name" />
+    email
+    <input v-model="editingMentor!.email" placeholder="Email" />
+    phone
+    <input v-model="editingMentor!.phone" placeholder="Phone" />
+    specialization
+    <input v-model="editingMentor!.specialization" placeholder="Specialization" />
+    bio
+    <textarea v-model="editingMentor!.bio" placeholder="Bio"></textarea>
+
+    <div class="modal-actions">
+      <button @click="updateMentor">Save</button>
+      <button @click="showEditModal = false">Cancel</button>
+    </div>
+
+  </div>
+</div>
+
 </template>
 
 <style scoped>
@@ -217,7 +309,55 @@ onMounted(() => {
   padding: 20px;
   border-top: 1px solid #e5e7eb;
 }
+.delete-btn {
+  border: none;
+  background: #dc3545;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #bb2d3b;
+}
+.edit-btn {
+  border: none;
+  background: #2563eb;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background: #1d4ed8;
+}
 
 
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
 </style>
 
