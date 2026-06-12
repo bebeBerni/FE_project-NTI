@@ -22,8 +22,6 @@
 
 <h2>Assign Mentor To Team</h2>
 
-<h2>Assign Mentor To Team</h2>
-
 <table class="mentor-table">
   <thead>
     <tr>
@@ -162,16 +160,15 @@ async removeMentor(teamId: number, mentorId: number) {
 },
 
 async assignMentor(teamId: number, mentorId: number) {
-    try {
-        const response = await api.post(`/teams/${teamId}/assign-mentor`,
-  {
-    mentor_id: mentorId
+  try {
+      await api.post(`/teams/${teamId}/assign-mentor`, {
+          mentor_id: mentorId
+      });
+
+      await this.loadTeams();
+  } catch (error) {
+      console.error(error);
   }
-);
-        await this.loadTeams();
-    } catch (error) {
-        console.error(error);
-    }
 },
   }
 }
