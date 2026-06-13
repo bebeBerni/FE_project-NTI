@@ -5,6 +5,11 @@ import api from '@/api/axios'
 
 const { t } = useI18n()
 
+interface Commission {
+  id: number
+  name: string
+}
+
 interface Project {
   id: number
   title: string
@@ -14,6 +19,9 @@ interface Project {
 }
 
 const projects = ref<Project[]>([])
+const commissions = ref<Commission[]>([])
+const assignedCommissions = ref<Record<number, Commission | null>>({})
+
 const loading = ref(false)
 const search = ref('')
 const total = ref(0)
@@ -33,6 +41,10 @@ async function loadProjects() {
 
     projects.value = response.data.projects ?? []
     total.value = projects.value.length
+
+    for (const project of projects.value) {
+      await loadAssignedCommission(project.id)
+    }
   } catch (error) {
     console.error('Failed to load projects:', error)
   } finally {
@@ -40,12 +52,39 @@ async function loadProjects() {
   }
 }
 
+async function loadCommissions() {
+  try {
+    const response = await api.get('/admin/commissions')
+
+    console.log('COMMISSIONS API:', response.data)
+
+    commissions.value = response.data.commissions ?? []
+  } catch (error) {
+    console.error('Failed to load commissions:', error)
+  }
+}
+
+async function loadAssignedCommission(projectId: number) {
+  try {
+    const response = await api.get(`/projects/${projectId}/assigned-commission`)
+
+    console.log(`ASSIGNED COMMISSION ${projectId}:`, response.data)
+
+    assignedCommissions.value[projectId] = response.data.commission ?? null
+  } catch (error) {
+    console.error(`Failed to load assigned commission for project ${projectId}:`, error)
+
+    assignedCommissions.value[projectId] = null
+  }
+}
+
 watch(search, () => {
   loadProjects()
 })
 
-onMounted(() => {
-  loadProjects()
+onMounted(async () => {
+  await loadProjects()
+  await loadCommissions()
 })
 
 function editProject(project: Project) {
@@ -56,7 +95,7 @@ async function saveProject() {
   if (!editingProject.value) return
 
   try {
-    await api.put(`/admin/projects/${editingProject.value.id}`, {
+    await api.put(`/projects/${editingProject.value.id}`, {
       title: editingProject.value.title,
       description: editingProject.value.description,
       status: editingProject.value.status,
@@ -74,10 +113,30 @@ async function deleteProject(id: number) {
   if (!confirm(t('dashboard.messages.sureDelete'))) return
 
   try {
-    await api.delete(`/admin/projects/${id}`)
+    await api.delete(`/projects/${id}`)
     await loadProjects()
   } catch (error) {
     console.error(error)
+  }
+}
+
+function onCommissionSelect(projectId: number, event: Event) {
+  const target = event.target as HTMLSelectElement | null
+
+  if (!target || !target.value) return
+
+  assignCommission(projectId, Number(target.value))
+}
+
+async function assignCommission(projectId: number, commissionId: number) {
+  try {
+    await api.post(`/admin/projects/${projectId}/assign-commission`, {
+      commission_id: commissionId,
+    })
+
+    await loadAssignedCommission(projectId)
+  } catch (error) {
+    console.error('Failed to assign commission:', error)
   }
 }
 </script>
@@ -85,7 +144,6 @@ async function deleteProject(id: number) {
 <template>
   <div class="users-page">
     <div class="users-card">
-
       <div class="users-header">
         <div>
           <h1 class="users-title">All Projects</h1>
@@ -109,6 +167,8 @@ async function deleteProject(id: number) {
               <th>Title</th>
               <th>Description</th>
               <th>Status</th>
+              <th>Assigned Commission</th>
+              <th>Assign Commission</th>
               <th>Created At</th>
               <th>Actions</th>
             </tr>
@@ -126,28 +186,63 @@ async function deleteProject(id: number) {
                 </span>
               </td>
 
+              <td>
+                <span v-if="assignedCommissions[project.id]">
+                  {{ assignedCommissions[project.id]?.name }}
+                </span>
+
+                <span v-else class="empty-text">
+                  No commission
+                </span>
+              </td>
+
+              <td>
+                <select
+                  class="commission-select"
+                  :value="assignedCommissions[project.id]?.id ?? ''"
+                  @change="onCommissionSelect(project.id, $event)"
+                >
+                  <option value="">
+                    Select commission
+                  </option>
+
+                  <option
+                    v-for="commission in commissions"
+                    :key="commission.id"
+                    :value="commission.id"
+                  >
+                    {{ commission.name }}
+                  </option>
+                </select>
+              </td>
+
               <td>{{ project.created_at }}</td>
 
               <td>
-                <button class="edit-btn" @click="editProject(project)">
+                <button
+                  class="edit-btn"
+                  @click="editProject(project)"
+                >
                   Edit
                 </button>
 
-                <button class="delete-btn" @click="deleteProject(project.id)">
+                <button
+                  class="delete-btn"
+                  @click="deleteProject(project.id)"
+                >
                   Delete
                 </button>
               </td>
             </tr>
 
             <tr v-if="!loading && projects.length === 0">
-              <td colspan="6" class="empty-state">
+              <td colspan="8" class="empty-state">
                 No projects found
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
     </div>
   </div>
 
@@ -160,23 +255,40 @@ async function deleteProject(id: number) {
       <h2>Edit Project</h2>
 
       <label>Title</label>
-      <input v-model="editingProject.title" placeholder="Title" />
+      <input
+        v-model="editingProject.title"
+        placeholder="Title"
+      />
 
       <label>Description</label>
-      <textarea v-model="editingProject.description" placeholder="Description"></textarea>
+      <textarea
+        v-model="editingProject.description"
+        placeholder="Description"
+      ></textarea>
 
       <label>Status</label>
       <select v-model="editingProject.status">
-        <option value="open">Open</option>
         <option value="pending">Pending</option>
-        <option value="approved">Approved</option>
-        <option value="declined">Declined</option>
-        <option value="closed">Closed</option>
+        <option value="active">Active</option>
+        <option value="paused">Paused</option>
+        <option value="finished">Finished</option>
+        <option value="archived">Archived</option>
       </select>
 
       <div class="modal-actions">
-        <button class="edit-btn" @click="saveProject">Save</button>
-        <button class="delete-btn" @click="editingProject = null">Cancel</button>
+        <button
+          class="edit-btn"
+          @click="saveProject"
+        >
+          Save
+        </button>
+
+        <button
+          class="delete-btn"
+          @click="editingProject = null"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </div>
@@ -247,6 +359,7 @@ async function deleteProject(id: number) {
 .users-table td {
   padding: 14px 16px;
   border-bottom: 1px solid #f1f5f9;
+  vertical-align: top;
 }
 
 .users-table tbody tr:hover {
@@ -266,10 +379,24 @@ async function deleteProject(id: number) {
   color: #15803d;
 }
 
+.empty-text {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
 .empty-state {
   text-align: center;
   color: #6b7280;
   padding: 40px;
+}
+
+.commission-select {
+  width: 100%;
+  min-width: 180px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: white;
 }
 
 .modal-overlay {
