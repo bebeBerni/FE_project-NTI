@@ -127,6 +127,16 @@ const routes: RouteRecordRaw[] = [
   name: 'team-chat',
   component: TeamChatView,
 },
+{
+  path: '/all_projects',
+  name: 'AllProjects',
+  component: () => import('../views/AllProjects.vue')
+},
+{
+  path: '/all_commissions',
+  name: 'AllCommissions',
+  component: () => import('../views/AllCommissions.vue')
+},
 
 
   // auth

@@ -27,6 +27,24 @@
         </router-link>
       </div>
 
+      <div class="admin-card">
+  <h2>{{ $t('dashboard.admin_dashboard.projects') }}</h2>
+  <p>{{ $t('dashboard.admin_dashboard.all_projects') }}</p>
+
+  <router-link class="admin-link" to="/all_projects">
+    {{ $t('all_projects') }}
+  </router-link>
+</div>
+
+<div class="admin-card">
+  <h2>{{ $t('dashboard.admin_dashboard.commissions') }}</h2>
+  <p>{{ $t('dashboard.admin_dashboard.all_commissions') }}</p>
+
+  <router-link class="admin-link" to="/all_commissions">
+    {{ $t('all_commissions') }}
+  </router-link>
+</div>
+
     </div>
 
     <hr class="divider" />

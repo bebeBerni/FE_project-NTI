@@ -23,18 +23,27 @@ dashboard:{
 
 
    admin_dashboard: {
-      title: "Admin Dashboard",
-      subtitle: "Management control panel",
-      users: "Users",
-      all_users: "All user list",
-      mentors: "Mentors",
-      all_mentors: "All mentors list",
-      assign_mentor: "Assign Mentor To Team",
-      team: "Team",
-      current_mentors: "Current Mentors",
-      select_mentor: "Select Mentor",
-      remove: "Remove",
-    },
+  title: "Admin Dashboard",
+  subtitle: "System management",
+
+  users: "Users",
+  all_users: "All Users",
+
+  mentors: "Mentors",
+  all_mentors: "All Mentors",
+
+  projects: "Projects",
+  all_projects: "All Projects",
+
+  commissions: "Commissions",
+  all_commissions: "All Commissions",
+
+  team: "Team",
+  current_mentors: "Current Mentors",
+  assign_mentor: "Assign Mentor",
+  select_mentor: "Select Mentor",
+  remove: "Remove"
+},
 
      UserList: {
       title: "Users",
@@ -70,6 +79,41 @@ dashboard:{
         empty: "No mentors found"
 
       },
+      ProjectList: {
+  title: "Projects",
+  subtitle: "Manage all projects",
+  total: "Total projects",
+
+  id: "ID",
+  name: "Name",
+  titleColumn: "Project Title",
+  description: "Description",
+  status: "Status",
+  createdAt: "Created At",
+
+  actions: "Actions",
+  edit: "Edit",
+  delete: "Delete",
+
+  empty: "No projects found"
+},
+
+CommissionList: {
+  title: "Commissions",
+  subtitle: "Manage all commissions",
+  total: "Total commissions",
+
+  id: "ID",
+  name: "Name",
+  description: "Description",
+  createdAt: "Created At",
+
+  actions: "Actions",
+  edit: "Edit",
+  delete: "Delete",
+
+  empty: "No commissions found"
+},
       messages:{
         mentorUpdated: "Mentor updated successfully!",
         mentorDeleted: "Mentor deleted successfully!",
@@ -321,18 +365,63 @@ dashboard: {
   welcome: "Vitajte späť!",
 
   admin_dashboard: {
-    title: "Admin nástenka",
-    subtitle: "Ovládací panel správy",
-    users: "Používatelia",
-    all_users: "Zoznam všetkých používateľov",
-    mentors: "Mentori",
-    all_mentors: "Zoznam všetkých mentorov",
-    assign_mentor: "Priradiť mentora k tímu",
-    team: "Tím",
-    current_mentors: "Aktuálni mentori",
-    select_mentor: "Vybrať mentora",
-    remove: "Odstrániť"
-  },
+  title: "Administrátorský panel",
+  subtitle: "Správa systému",
+
+  users: "Používatelia",
+  all_users: "Všetci používatelia",
+
+  mentors: "Mentori",
+  all_mentors: "Všetci mentori",
+
+  projects: "Projekty",
+  all_projects: "Všetky projekty",
+
+  commissions: "Komisie",
+  all_commissions: "Všetky komisie",
+
+  team: "Tím",
+  current_mentors: "Aktuálni mentori",
+  assign_mentor: "Priradiť mentora",
+  select_mentor: "Vybrať mentora",
+  remove: "Odobrať"
+},
+
+  ProjectList: {
+  title: "Projekty",
+  subtitle: "Správa všetkých projektov",
+  total: "Celkový počet projektov",
+
+  id: "ID",
+  name: "Názov",
+  titleColumn: "Názov projektu",
+  description: "Popis",
+  status: "Status",
+  createdAt: "Vytvorené",
+
+  actions: "Akcie",
+  edit: "Upraviť",
+  delete: "Odstrániť",
+
+  empty: "Neboli nájdené žiadne projekty"
+},
+
+CommissionList: {
+  title: "Komisie",
+  subtitle: "Správa všetkých komisií",
+  total: "Celkový počet komisií",
+
+  id: "ID",
+  name: "Názov",
+  description: "Popis",
+  createdAt: "Vytvorené",
+
+  actions: "Akcie",
+  edit: "Upraviť",
+  delete: "Odstrániť",
+
+  empty: "Neboli nájdené žiadne komisie"
+},
 
   UserList: {
     title: "Používatelia",
