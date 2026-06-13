@@ -184,8 +184,7 @@ async loadMentors() {
 },
 async removeMentor(teamId: number, mentorId: number) {
     try {
-        const response = await api.delete(
-  `/teams/${teamId}/mentors/${mentorId}`
+        const response = await api.delete(`/teams/${teamId}/mentors/${mentorId}`
 );
 
         console.log(response.data);
