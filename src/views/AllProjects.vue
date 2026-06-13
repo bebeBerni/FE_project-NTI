@@ -146,9 +146,9 @@ async function assignCommission(projectId: number, commissionId: number) {
     <div class="users-card">
       <div class="users-header">
         <div>
-          <h1 class="users-title">All Projects</h1>
-          <p class="users-subtitle">Manage all projects</p>
-          <p>Total: {{ total }}</p>
+          <h1 class="users-title">{{ $t('dashboard.allProjects.title') }}</h1>
+          <p class="users-subtitle">{{ $t('dashboard.allProjects.subtitle') }}</p>
+          <p>{{ $t('dashboard.allProjects.total') }}: {{ total }}</p>
         </div>
 
         <input
@@ -163,14 +163,14 @@ async function assignCommission(projectId: number, commissionId: number) {
         <table class="users-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Status</th>
-              <th>Assigned Commission</th>
-              <th>Assign Commission</th>
-              <th>Created At</th>
-              <th>Actions</th>
+              <th>{{ $t('dashboard.allProjects.id') }}</th>
+              <th>{{ $t('dashboard.allProjects.titleColumn') }}</th>
+              <th>{{ $t('dashboard.allProjects.description') }}</th>
+              <th>{{ $t('dashboard.allProjects.status') }}</th>
+              <th>{{ $t('dashboard.allProjects.assignedCommission') }}</th>
+              <th>{{ $t('dashboard.allProjects.assignCommission') }}</th>
+              <th>{{ $t('dashboard.allProjects.createdAt') }}</th>
+              <th>{{ $t('dashboard.allProjects.actions') }}</th>
             </tr>
           </thead>
 
@@ -182,7 +182,7 @@ async function assignCommission(projectId: number, commissionId: number) {
 
               <td>
                 <span class="badge badge-success">
-                  {{ project.status }}
+                  {{t(`dashboard.allProjects.${project.status}`)}}
                 </span>
               </td>
 
@@ -192,7 +192,7 @@ async function assignCommission(projectId: number, commissionId: number) {
                 </span>
 
                 <span v-else class="empty-text">
-                  No commission
+                  {{ $t('dashboard.allProjects.noCommission') }}
                 </span>
               </td>
 
@@ -203,7 +203,7 @@ async function assignCommission(projectId: number, commissionId: number) {
                   @change="onCommissionSelect(project.id, $event)"
                 >
                   <option value="">
-                    Select commission
+                    {{ $t('dashboard.allProjects.selectCommission') }}
                   </option>
 
                   <option
@@ -223,21 +223,21 @@ async function assignCommission(projectId: number, commissionId: number) {
                   class="edit-btn"
                   @click="editProject(project)"
                 >
-                  Edit
+                  {{ $t('dashboard.allProjects.edit') }}
                 </button>
 
                 <button
                   class="delete-btn"
                   @click="deleteProject(project.id)"
                 >
-                  Delete
+                  {{ $t('dashboard.allProjects.delete') }}
                 </button>
               </td>
             </tr>
 
             <tr v-if="!loading && projects.length === 0">
               <td colspan="8" class="empty-state">
-                No projects found
+                {{ $t('dashboard.allProjects.empty') }}
               </td>
             </tr>
           </tbody>
@@ -252,27 +252,27 @@ async function assignCommission(projectId: number, commissionId: number) {
     @click.self="editingProject = null"
   >
     <div class="modal">
-      <h2>Edit Project</h2>
+      <h2>{{ $t('dashboard.allProjects.editproject') }}</h2>
 
-      <label>Title</label>
-      <input
-        v-model="editingProject.title"
-        placeholder="Title"
-      />
+      <label>{{ $t('dashboard.allProjects.titleColumn') }}</label>
+    <input
+  v-model="editingProject.title"
+  :placeholder="$t('dashboard.allProjects.titleColumn')"
+/>
 
-      <label>Description</label>
+      <label>{{ $t('dashboard.allProjects.description') }}</label>
       <textarea
         v-model="editingProject.description"
-        placeholder="Description"
+        :placeholder="$t('dashboard.allProjects.description')"
       ></textarea>
 
-      <label>Status</label>
+      <label>{{ $t('dashboard.allProjects.status') }}</label>
       <select v-model="editingProject.status">
-        <option value="pending">Pending</option>
-        <option value="active">Active</option>
-        <option value="paused">Paused</option>
-        <option value="finished">Finished</option>
-        <option value="archived">Archived</option>
+        <option value="pending">{{ $t('dashboard.allProjects.pending') }}</option>
+        <option value="active">{{ $t('dashboard.allProjects.active') }}</option>
+        <option value="paused">{{ $t('dashboard.allProjects.paused') }}</option>
+        <option value="finished">{{ $t('dashboard.allProjects.finished') }}</option>
+        <option value="archived">{{ $t('dashboard.allProjects.archived') }}</option>
       </select>
 
       <div class="modal-actions">
@@ -280,14 +280,14 @@ async function assignCommission(projectId: number, commissionId: number) {
           class="edit-btn"
           @click="saveProject"
         >
-          Save
+          {{ $t('dashboard.allProjects.save') }}
         </button>
 
         <button
           class="delete-btn"
           @click="editingProject = null"
         >
-          Cancel
+          {{ $t('dashboard.allProjects.cancel') }}
         </button>
       </div>
     </div>

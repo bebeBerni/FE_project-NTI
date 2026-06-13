@@ -178,15 +178,15 @@ async function removeMember(commissionId: number, userId: number) {
 
       <div class="users-header">
         <div>
-          <h1 class="users-title">All Commissions</h1>
-          <p class="users-subtitle">Manage all commissions</p>
-          <p>Total: {{ total }}</p>
+          <h1 class="users-title">{{ $t('dashboard.allCommissions.title') }}</h1>
+          <p class="users-subtitle">{{ $t('dashboard.allCommissions.subtitle') }}</p>
+          <p>{{ $t('dashboard.allCommissions.total') }}: {{ total }}</p>
         </div>
 
         <input
           v-model="search"
           type="text"
-          placeholder="Search by name..."
+          :placeholder="$t('dashboard.allCommissions.search')"
           class="search-input"
         >
       </div>
@@ -195,13 +195,13 @@ async function removeMember(commissionId: number, userId: number) {
         <table class="users-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Created At</th>
-              <th>Members</th>
-              <th>Add Member</th>
-              <th>Actions</th>
+              <th>{{t('dashboard.allCommissions.id')}}</th>
+              <th>{{t('dashboard.allCommissions.name')}}</th>
+              <th>{{t('dashboard.allCommissions.description')}}</th>
+              <th>{{t('dashboard.allCommissions.createdAt')}}</th>
+              <th>{{t('dashboard.allCommissions.members')}}</th>
+              <th>{{t('dashboard.allCommissions.addMember')}}</th>
+              <th>{{t('dashboard.allCommissions.actions')}}</th>
             </tr>
           </thead>
 
@@ -231,7 +231,7 @@ async function removeMember(commissionId: number, userId: number) {
   class="small-delete-btn"
   @click="removeMember(commission.id, member.user_id)"
 >
-  Remove
+  {{ $t('dashboard.allCommissions.delete') }}
 </button>
                   </div>
                 </div>
@@ -240,7 +240,7 @@ async function removeMember(commissionId: number, userId: number) {
                   v-else
                   class="empty-text"
                 >
-                  No members
+                  {{ $t('dashboard.allCommissions.empty') }}
                 </span>
               </td>
 
@@ -250,7 +250,7 @@ async function removeMember(commissionId: number, userId: number) {
                   @change="onMemberSelect(commission.id, $event)"
                 >
                   <option value="">
-                    Select member
+                    {{ $t('dashboard.allCommissions.selectMember') }}
                   </option>
 
                   <option
@@ -270,14 +270,14 @@ async function removeMember(commissionId: number, userId: number) {
                   class="edit-btn"
                   @click="editCommission(commission)"
                 >
-                  Edit
+                  {{ $t('dashboard.allCommissions.edit') }}
                 </button>
 
                 <button
                   class="delete-btn"
                   @click="deleteCommission(commission.id)"
                 >
-                  Delete
+                  {{ $t('dashboard.allCommissions.delete') }}
                 </button>
               </td>
             </tr>
@@ -287,7 +287,7 @@ async function removeMember(commissionId: number, userId: number) {
                 colspan="7"
                 class="empty-state"
               >
-                No commissions found
+                {{ $t('dashboard.allCommissions.empty') }}
               </td>
             </tr>
           </tbody>
@@ -303,18 +303,18 @@ async function removeMember(commissionId: number, userId: number) {
     @click.self="editingCommission = null"
   >
     <div class="modal">
-      <h2>Edit Commission</h2>
+      <h2>{{ $t('dashboard.allCommissions.editcommission') }}</h2>
 
-      <label>Name</label>
+      <label>{{ $t('dashboard.allCommissions.name') }}</label>
       <input
         v-model="editingCommission.name"
-        placeholder="Name"
+        :placeholder="$t('dashboard.allCommissions.name')"
       />
 
-      <label>Description</label>
+      <label>{{ $t('dashboard.allCommissions.description') }}</label>
       <textarea
         v-model="editingCommission.description"
-        placeholder="Description"
+        :placeholder="$t('dashboard.allCommissions.description')"
       ></textarea>
 
       <div class="modal-actions">
@@ -322,14 +322,14 @@ async function removeMember(commissionId: number, userId: number) {
           class="edit-btn"
           @click="saveCommission"
         >
-          Save
+          {{ $t('dashboard.allCommissions.save') }}
         </button>
 
         <button
           class="delete-btn"
           @click="editingCommission = null"
         >
-          Cancel
+          {{ $t('dashboard.allCommissions.cancel') }}
         </button>
       </div>
     </div>
