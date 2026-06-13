@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import axios from 'axios'
 import { ref, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import api from '@/api/axios'
@@ -160,7 +161,13 @@ async function removeMember(commissionId: number, userId: number) {
 
     await loadCommissions()
   } catch (error) {
-    console.error('Failed to remove member:', error)
+    if (axios.isAxiosError(error)) {
+      console.error('Status:', error.response?.status)
+      console.error('Data:', error.response?.data)
+      console.error('Headers:', error.response?.headers)
+    } else {
+      console.error('Unexpected error:', error)
+    }
   }
 }
 </script>
