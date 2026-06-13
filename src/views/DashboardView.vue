@@ -2,12 +2,6 @@
   <div class="dashboard-wrapper">
     <div class="dashboard-card">
 
-      <!-- HEADER -->
-      <div class="dashboard-header">
-        <h1 class="title">{{ $t('dashboard.admin_dashboard.title') }}</h1>
-        <p class="subtitle">{{ $t('dashboard.admin_dashboard.subtitle') }}</p>
-      </div>
-
       <!-- LOADING -->
       <div v-if="loading" class="loading-state">
         <div class="spinner"></div>
