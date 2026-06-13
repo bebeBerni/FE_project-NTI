@@ -362,6 +362,8 @@ data(): {
   pendingTeamRequests: TeamJoinRequest[]
   hasCv: boolean
   projectApplications: ProjectApplication[]
+  motivation: string
+  note: string
 }  {
 return {
   myTeam: null,
@@ -372,6 +374,8 @@ return {
   pendingTeamRequests: [],
   hasCv: false,
   projectApplications: [],
+  motivation: '',
+  note: '',
 }
 },
 

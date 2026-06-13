@@ -53,11 +53,25 @@
         <select v-model="form.status" required>
           <option value="pending">Pending</option>
           <option value="active">Active</option>
-          <option value="paused">Paused</option>
-          <option value="finished">Finished</option>
-          <option value="archived">Archived</option>
         </select>
       </div>
+
+      <div class="form-group">
+  <label>Motivation</label>
+  <textarea
+    v-model="form.motivation"
+    placeholder="Explain why you want to create this project"
+    required
+  ></textarea>
+</div>
+
+<div class="form-group">
+  <label>Note</label>
+  <textarea
+    v-model="form.note"
+    placeholder="Additional information (optional)"
+  ></textarea>
+</div>
 
       <button type="submit" :disabled="loading">
         {{ loading ? 'Creating...' : 'Create Project' }}
@@ -93,6 +107,8 @@ const form = reactive({
   budget: '',
   deadline: '',
   status: 'pending',
+  motivation: '',
+  note: '',
 })
 
 const createProject = async () => {
@@ -108,6 +124,8 @@ const createProject = async () => {
       budget: form.budget,
       deadline: form.deadline || null,
       status: form.status,
+      motivation: form.motivation,
+      note: form.note,
     })
 
     successMessage.value =
