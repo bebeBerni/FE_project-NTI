@@ -199,6 +199,29 @@
     </div>
   </div>
 </section>
+<section v-if="projectApplications.length">
+  <h2>My Project Applications</h2>
+
+  <div
+    v-for="application in projectApplications"
+    :key="application.id"
+    class="list-item"
+  >
+    <h3>{{ application.project.title }}</h3>
+
+    <p>
+      Status:
+      <span
+        :class="[
+          'status',
+          getStatusClass(application.status)
+        ]"
+      >
+        {{ formatStatus(application.status) }}
+      </span>
+    </p>
+  </div>
+</section>
 
     <section v-if="!myProject && myTeam && isLeader">
       <h2>Available Projects</h2>
@@ -279,6 +302,15 @@ interface Project {
     last_name?: string
   }
 }
+interface ProjectApplication {
+  id: number
+  status: string
+
+  project: {
+    id: number
+    title: string
+  }
+}
 
 interface TeamMember {
   id: number
@@ -321,7 +353,7 @@ export default {
     },
   },
 
-  data(): {
+data(): {
   myTeam: Team | null
   teamMembers: TeamMember[]
   myProject: Project | null
@@ -329,8 +361,9 @@ export default {
   availableTeams: Team[]
   pendingTeamRequests: TeamJoinRequest[]
   hasCv: boolean
+  projectApplications: ProjectApplication[]
 }  {
-  return {
+return {
   myTeam: null,
   teamMembers: [],
   myProject: null,
@@ -338,6 +371,7 @@ export default {
   availableTeams: [],
   pendingTeamRequests: [],
   hasCv: false,
+  projectApplications: [],
 }
 },
 
@@ -368,6 +402,8 @@ computed: {
         this.pendingTeamRequests =
           response.data.pending_team_requests || []
         this.hasCv = response.data.has_cv
+        this.projectApplications =
+  response.data.project_applications || []
 
 if (this.myProject) {
   this.myProject.project_application_status =
