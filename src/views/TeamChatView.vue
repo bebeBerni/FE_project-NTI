@@ -2,7 +2,8 @@
     <div class="chat-container">
       <h1>Team Chat</h1>
   
-      <div class="messages">
+      <div ref="messagesContainer"
+       class="messages">
         <div
           v-for="message in messages"
           :key="message.id"
@@ -43,37 +44,52 @@
   
     async mounted() {
       await this.loadMessages()
+      this.scrollToBottom()
     },
   
     methods: {
-      async loadMessages() {
-        const teamId = this.$route.params.id
-  
-        const response = await api.get(
-          `/teams/${teamId}/messages`
-        )
-  
-        this.messages = response.data.messages
-      },
+      scrollToBottom() {
+  setTimeout(() => {
+    const container = this.$refs.messagesContainer
+
+    if (container) {
+      container.scrollTop = container.scrollHeight
+    }
+  }, 50)
+},
+
+  async loadMessages() {
+    const teamId = this.$route.params.id
+
+    const response = await api.get(
+      `/teams/${teamId}/messages`
+    )
+
+    this.messages = response.data.messages
+
+    this.scrollToBottom()
+  },
   
       async sendMessage() {
-        if (!this.newMessage.trim()) {
-          return
-        }
-  
-        const teamId = this.$route.params.id
-  
-        await api.post(
-          `/teams/${teamId}/messages`,
-          {
-            message: this.newMessage,
-          }
-        )
-  
-        this.newMessage = ''
-  
-        await this.loadMessages()
-      },
+  if (!this.newMessage.trim()) {
+    return
+  }
+
+  const teamId = this.$route.params.id
+
+  await api.post(
+    `/teams/${teamId}/messages`,
+    {
+      message: this.newMessage,
+    }
+  )
+
+  this.newMessage = ''
+
+  await this.loadMessages()
+
+  this.scrollToBottom()
+}
     },
   }
   </script>
@@ -118,5 +134,11 @@
 
 .chat-input button {
   margin-top: 10px;
+}
+.messages {
+  height: 500px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 </style>
